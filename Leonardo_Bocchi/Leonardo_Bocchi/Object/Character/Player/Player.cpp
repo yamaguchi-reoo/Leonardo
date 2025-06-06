@@ -84,7 +84,7 @@ void Player::Update()
 void Player::Draw(Vector2D offset, double rate) const
 {
 	//__super::Draw(offset, 1.5);
-	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
+	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
 
 	// –³“GŽžŠÔ’†‚Í“_–Å‚³‚¹‚é
 	bool is_draw = true;
@@ -96,8 +96,8 @@ void Player::Draw(Vector2D offset, double rate) const
 
 	if (is_draw)
 	{
-		offset.y += 2.0f;
-		__super::Draw(offset, 1.5);
+		offset.y -= 4.5f;
+		__super::Draw(offset, 2.0);
 	}
 	DrawFormatString(10, 120, GetColor(255, 255, 255), "HP ~ %d", hp);
 
@@ -287,16 +287,16 @@ void Player::LoadPlayerImage()
 	animation_data[ActionState::IDLE] = idle_imgs;
 
 	// WALK
-	auto walk_imgs = rm->GetImages("Resource/Images/Character/Player/Player-walk/player-run", 6);
+	auto walk_imgs = rm->GetImages("Resource/Images/Character/Player/Player-run/player-run", 6);
 	animation_data[ActionState::WALK] = walk_imgs;
 
 	// JUMP
 	auto jump_imgs = rm->GetImages("Resource/Images/Character/Player/Player-jump/player-jump", 2);
 	animation_data[ActionState::JUMP] = jump_imgs;
 
-	// DAMAGE
-	auto dmg_imgs = rm->GetImages("Resource/Images/Character/Player/Player-damage/player-damage", 1);
-	animation_data[ActionState::DAMAGE] = dmg_imgs;
+	//// DAMAGE
+	//auto dmg_imgs = rm->GetImages("Resource/Images/Character/Player/Player-damage/player-damage", 1);
+	//animation_data[ActionState::DAMAGE] = dmg_imgs;
 
 	image = animation_data[ActionState::IDLE][0];
 }

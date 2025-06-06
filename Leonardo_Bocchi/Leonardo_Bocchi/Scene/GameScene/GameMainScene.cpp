@@ -215,7 +215,7 @@ void GameMainScene::SetStage()
 			switch (stage_data[i][j]) {
 			case EMPTY: break;
 			case BLOCK: CreateObject<Block>(pos, Vector2D((float)BOX_SIZE)); break;
-			case PLAYER: CreateObject<Player>(pos, Vector2D(48.0f, 96.0f)); break;
+			case PLAYER: CreateObject<Player>(pos, Vector2D(48.0f, 64.0f)); break;
 			case MOVE_BLOCK: CreateObject<MoveBlock>(pos, Vector2D((float)BOX_SIZE, 24.0f)); break;
 			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE * 2)); 
 				goal_pos = pos;

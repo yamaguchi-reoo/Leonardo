@@ -48,15 +48,17 @@ const std::vector<int>& ResourceManager::GetImages(std::string file_name, int al
 	//コンテナ内に指定ファイルがなければ、生成する
 	if (images_container.count(file_name) == NULL)
 	{
-		if (num_x == 0 || num_y == 0)//if (all_num == 1)
-		{
-			//CreateImagesResource(file_name);
-			CreateImagesResourceSingle(file_name, all_num);
-		}
-		else
-		{
-			CreateImagesResource(file_name, all_num, num_x, num_y, size_x, size_y);
-		}
+
+		CreateImagesResourceSingle(file_name, all_num);
+		//if (all_num == 1)
+		//{
+		//	//CreateImagesResource(file_name);
+		//	
+		//}
+		//else
+		//{
+		//	CreateImagesResource(file_name, all_num, num_x, num_y, size_x, size_y);
+		//}
 	}
 	return images_container[file_name];
 }
