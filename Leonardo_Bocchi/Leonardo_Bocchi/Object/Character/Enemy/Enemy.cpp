@@ -33,6 +33,7 @@ void Enemy::Update()
 	{
 		// 補間率
 		float t = static_cast<float>(frame_timer) / frame_duration;
+		t = Clamp(t, 0.0f, 1.0f);
 
 		// 線形補間
 		Vector2D interpolated = start_position * (1.0f - t) + end_position * t;
@@ -63,19 +64,8 @@ void Enemy::Update()
 			}
 		}
 	}
-	else
-	{
-		// 補間終了 → 惰性移動
-		location += velocity;
-		SetLocation(location);
-
-		// ループ再生する場合：
-		// ResetReplay(); // ← こういう関数を作っておいて呼べばループ可能
-	}
 
 	__super::Update();
-
-
 }
 
 void Enemy::Draw(Vector2D offset, double rate) const
@@ -171,12 +161,12 @@ void Enemy::LoadEnemyImage()
 	animation_data[ActionState::IDLE] = idle_imgs;
 
 	// WALK
-	//auto walk_imgs = rm->GetImages("Resource/Images/Character/Enemy/Enemy-run/enemy-run", 6);
-	//animation_data[ActionState::WALK] = walk_imgs;
+	auto walk_imgs = rm->GetImages("Resource/Images/Character/Enemy/Enemy-run/enemy-run", 6);
+	animation_data[ActionState::WALK] = walk_imgs;
 
 	// JUMP
-	//auto jump_imgs = rm->GetImages("Resource/Images/Character/Enemy/Enemy-jump/enemy-jump", 2);
-	//animation_data[ActionState::JUMP] = jump_imgs;
+	auto jump_imgs = rm->GetImages("Resource/Images/Character/Enemy/Enemy-jump/enemy-jump", 2);
+	animation_data[ActionState::JUMP] = jump_imgs;
 
 	// DAMAGE（なければ省略でもOK）
 	// auto dmg_imgs = rm->GetImages("Resource/Images/Character/Enemy/Enemy-damage/enemy-damage", 1);

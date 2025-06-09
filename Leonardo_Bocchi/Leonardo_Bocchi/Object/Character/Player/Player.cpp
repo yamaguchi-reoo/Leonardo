@@ -233,23 +233,22 @@ void Player::OnHitCollision(GameObject* hit_object)
 {
 	__super::OnHitCollision(hit_object);
 
-	//エネミーヒット時 OR トラップヒット時
+	// エネミーヒット時 OR トラップヒット時
 	if (hit_object->GetObjectType() == ENEMY || hit_object->GetObjectType() == TRAP)
 	{
 		if (!damage_flg && !is_invincible)
 		{
-			//ダメージを受ける
 			ApplyDamage();
 		}
 	}
 
-	//回復アイテムヒット時
+	// 回復アイテムヒット時
 	if (hit_object->GetObjectType() == HEAL)
 	{
 		hp += 1;
 	}
 
-	//無敵アイテムヒット時
+	// 無敵アイテムヒット時
 	if (hit_object->GetObjectType() == INVINCIBLE)
 	{
 		if (!is_invincible)
@@ -258,6 +257,20 @@ void Player::OnHitCollision(GameObject* hit_object)
 		}
 	}
 
+	// GOALヒット時
+	if (hit_object->GetObjectType() == GOAL)
+	{
+		// 最後の位置・状態を1frame強制的に記録
+		SaveMoveHistory();
+
+		// 任意：完全停止した状態を1frame追加する（IDLE状態）
+		PlayerMoveRecord stop_record;
+		stop_record.position = this->location;     // ゴール地点
+		stop_record.flip = this->flip_flg;
+		stop_record.action_state = ActionState::IDLE; // 止まっている状態
+
+		move_history.push_back(stop_record);
+	}
 }
 
 
