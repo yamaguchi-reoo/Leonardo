@@ -13,7 +13,7 @@ void MoveBlock::Update()
 {
 }
 
-void MoveBlock::Draw(Vector2D offset, double rate) const
+void MoveBlock::Draw(Vector2D offset, double rate)
 {
 	DrawBoxAA(offset.x, offset.y, offset.x + hit_box.x, offset.y + hit_box.y, GetColor(255, 0, 255), TRUE);
 	//DrawFormatString(10, 200, GetColor(255, 255, 255), "%f", move_range_right);

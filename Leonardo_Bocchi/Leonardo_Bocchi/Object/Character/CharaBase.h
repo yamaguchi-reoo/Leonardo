@@ -32,7 +32,7 @@ public:
 	//XVˆ—
 	virtual void Update()override;
 	//•`‰æˆ—
-	virtual void Draw(Vector2D offset, double rate) const override;
+	virtual void Draw(Vector2D offset, double rate)  override;
 	//I—¹ˆ—
 	virtual void Finalize()override;
 

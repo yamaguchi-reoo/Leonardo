@@ -36,7 +36,7 @@ public:
     //XVˆ—
     void Update()override;
     //•`‰æˆ—
-    void Draw(Vector2D offset, double rate) const override;
+    void Draw(Vector2D offset, double rate)  override;
     //I—¹ˆ—
     void Finalize()override;
 

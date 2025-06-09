@@ -13,7 +13,7 @@ void InvincibleItem::Update()
 {
 }
 
-void InvincibleItem::Draw(Vector2D offset, double rate) const
+void InvincibleItem::Draw(Vector2D offset, double rate)
 {
 	__super::Draw(offset, rate);
 	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(0, 255, 0), FALSE);

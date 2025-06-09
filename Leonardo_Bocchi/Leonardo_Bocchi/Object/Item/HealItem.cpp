@@ -14,7 +14,7 @@ void HealItem::Update()
 {
 }
 
-void HealItem::Draw(Vector2D offset, double rate) const
+void HealItem::Draw(Vector2D offset, double rate)
 {
 	__super::Draw(offset, 2.0f);
 	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 255, 255), TRUE);

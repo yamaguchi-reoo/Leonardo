@@ -81,7 +81,7 @@ void Player::Update()
 	__super::Update();
 }
 
-void Player::Draw(Vector2D offset, double rate) const
+void Player::Draw(Vector2D offset, double rate) 
 {
 	//__super::Draw(offset, 1.5);
 	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
@@ -312,7 +312,7 @@ void Player::LoadPlayerImage()
 	image = animation_data[ActionState::IDLE][0];
 }
 
-void Player::InvincibleEffect(Vector2D offset) const
+void Player::InvincibleEffect(Vector2D offset) 
 {
 	if (is_invincible)
 	{
@@ -325,17 +325,20 @@ void Player::InvincibleEffect(Vector2D offset) const
 			alpha = visible ? 255 : 50;
 		}
 
-		float radius_x = box_size.x * 0.7f;  // X•ûŒü‚Ì”¼Œa
-		float radius_y = box_size.y * 1.0f;  // Y•ûŒü‚Ì”¼Œa (‘È‰~Š´o‚·‚È‚ç­‚µ‘å‚«‚ß)
+		float radius_x = box_size.x * 0.5f;  // X•ûŒü‚Ì”¼Œa
+		float radius_y = box_size.y * 0.6f;  // Y•ûŒü‚Ì”¼Œa (‘È‰~Š´o‚·‚È‚ç­‚µ‘å‚«‚ß)
 
-		Vector2D center = { offset.x + box_size.x / 2, offset.y + box_size.y / 2 - 4.5f };
+		Vector2D center = { offset.x + box_size.x / 2, offset.y + box_size.y / 2 + 4.5f };
 
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 
 		// —Ö‚Á‚©‚Ì‘È‰~‚ğ•`‚­
-		DrawEllipseAA(center.x, center.y, radius_x, radius_y, 64, GetColor(0, 200, 255), false, 4);
+		DrawEllipseAA(center.x, center.y, radius_x, radius_y, 64, GetColor(0, 200, 255), false, 2);
 
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 70);
+		DrawEllipseAA(center.x, center.y, radius_x, radius_y, 64, GetColor(0, 200, 255), true, 2);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		
+
 	}
 
 

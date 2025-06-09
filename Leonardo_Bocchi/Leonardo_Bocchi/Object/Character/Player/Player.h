@@ -50,7 +50,7 @@ public:
     //XVˆ—
     void Update()override;
     //•`‰æˆ—
-    void Draw(Vector2D offset, double rate) const override;
+    void Draw(Vector2D offset, double rate) override;
     //I—¹ˆ—
     void Finalize()override;
 
@@ -79,7 +79,7 @@ public:
 
     void LoadPlayerImage();
 
-	void InvincibleEffect(Vector2D offset)const;
+	void InvincibleEffect(Vector2D offset);
 
     void DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness = 1);
 };

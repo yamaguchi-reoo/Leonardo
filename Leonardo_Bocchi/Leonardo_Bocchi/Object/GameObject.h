@@ -29,7 +29,7 @@ public:
 	//XVˆ—
 	virtual void Update();
 	//•`‰æˆ—
-	virtual void Draw(Vector2D offset, double rate) const;
+	virtual void Draw(Vector2D offset, double rate) ;
 	//I—¹ˆ—
 	virtual void Finalize();
 

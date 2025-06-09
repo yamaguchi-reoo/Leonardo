@@ -68,7 +68,7 @@ void Enemy::Update()
 	__super::Update();
 }
 
-void Enemy::Draw(Vector2D offset, double rate) const
+void Enemy::Draw(Vector2D offset, double rate) 
 {
 	offset.y -= 4.5f;
 	__super::Draw(offset, 2.0);

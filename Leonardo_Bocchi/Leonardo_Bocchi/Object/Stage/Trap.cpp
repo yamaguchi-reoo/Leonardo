@@ -12,7 +12,7 @@ void Trap::Update()
 {
 }
 
-void Trap::Draw(Vector2D offset, double rate) const
+void Trap::Draw(Vector2D offset, double rate) 
 {
 	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(0, 0, 255), FALSE);
 }

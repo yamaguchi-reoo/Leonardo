@@ -28,7 +28,7 @@ void GameObject::Update()
 {
 }
 
-void GameObject::Draw(Vector2D offset, double rate) const
+void GameObject::Draw(Vector2D offset, double rate) 
 {
 	// •`‰æ”ÍˆÍ‚Ì”»’è
 	if (offset.x + box_size.x >= 0 && offset.x < SCREEN_WIDTH)

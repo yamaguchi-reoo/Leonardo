@@ -13,7 +13,7 @@ void GoalPoint::Update()
 	__super::Update();
 }
 
-void GoalPoint::Draw(Vector2D offset, double rate) const
+void GoalPoint::Draw(Vector2D offset, double rate)
 {
 	//__super::Draw(offset, 1.0f);
 	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 255, 0), TRUE);

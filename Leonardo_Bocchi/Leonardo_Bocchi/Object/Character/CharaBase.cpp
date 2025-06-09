@@ -19,7 +19,7 @@ void CharaBase::Update()
 
 }
 
-void CharaBase::Draw(Vector2D offset, double rate) const
+void CharaBase::Draw(Vector2D offset, double rate) 
 {
 	//親クラスに書かれた描画処理の内容を実行する
 	__super::Draw(offset, rate);
