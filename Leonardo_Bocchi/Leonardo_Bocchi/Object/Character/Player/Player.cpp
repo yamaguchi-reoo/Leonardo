@@ -78,6 +78,19 @@ void Player::Update()
 
 	//アニメーション管理
 	AnimationControl();
+
+
+	for (auto& particle : heal_particles)
+	{
+		UpdateHealParticle(particle);
+	}
+
+	heal_particles.erase(
+		std::remove_if(heal_particles.begin(), heal_particles.end(),
+			[](const HealParticle& p) { return !p.is_active; }),
+		heal_particles.end()
+	);
+
 	__super::Update();
 }
 
@@ -103,9 +116,14 @@ void Player::Draw(Vector2D offset, double rate)
 
 	InvincibleEffect(offset);
 
+	for (const auto& particle : heal_particles)
+	{
+		DrawHealParticle(particle, offset);
+	}
+
 #ifdef _DEBUG
 	//DrawFormatString(10, 120, GetColor(255, 255, 255), "HP × %d", hp);
-	DrawFormatString(10, 100, GetColor(255, 255, 255), "%f     %f", velocity.x, velocity.y);
+	DrawFormatString(10, 100, GetColor(255, 255, 255), "%f     %f", location.x + (box_size.x / 2), location.y + (box_size.y / 2));
 	DrawFormatString(10, 80, GetColor(255, 255, 255), "%d", jump_time);
 	DrawFormatString(10, 60, GetColor(255, 255, 255), "invicible :%d", is_invincible);
 	DrawFormatString(10, 40, GetColor(255, 255, 255), "invicible_timer :%d", invincible_timer);
@@ -216,8 +234,6 @@ void Player::HandleInput()
 
 }
 
-
-
 void Player::AnimationControl()
 {
 
@@ -248,6 +264,10 @@ void Player::OnHitCollision(GameObject* hit_object)
 	if (hit_object->GetObjectType() == HEAL)
 	{
 		hp += 1;
+		for (int i = 0; i < 10; ++i)
+		{
+			heal_particles.push_back(HealParticle(Vector2D{ box_size.x / 2, box_size.y / 2 }));
+		}
 	}
 
 	// 無敵アイテムヒット時
@@ -337,6 +357,7 @@ void Player::InvincibleEffect(Vector2D offset)
 
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 70);
 		DrawEllipseAA(center.x, center.y, radius_x, radius_y, 64, GetColor(0, 200, 255), true, 2);
+
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		
 
 	}
@@ -384,4 +405,36 @@ void Player::DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segme
 			prev_y = y;
 		}
 	}
+}
+
+void Player::UpdateHealParticle(HealParticle& particle)
+{
+	if (!particle.is_active) return;
+
+	particle.position += particle.velocity;
+	particle.velocity *= 0.95f;
+	particle.scale *= 0.98f; // 徐々に小さくなる
+
+	particle.timer++;
+	if (particle.timer >= particle.duration)
+	{
+		// ライフタイム終了で非アクティブに
+		particle.is_active = false; 
+	}
+
+
+}
+
+void Player::DrawHealParticle(const HealParticle& particle, Vector2D offset)
+{
+	if (!particle.is_active) return;
+
+	float t = static_cast<float>(particle.timer) / particle.duration;
+	float alpha = static_cast<int>(255 * (1.0f - t)); // 徐々に透明になる
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawCircleAA(particle.position.x + offset.x, particle.position.y + offset.y, 3.0f * particle.scale, 12, GetColor(100, 255, 100), true);
+	//DrawCircleAA(center.x, center.y, 3.0f * particle.scale, 12, GetColor(100, 255, 100), true);
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

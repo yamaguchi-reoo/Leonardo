@@ -161,6 +161,7 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Character\Player\HealParticle.h" />
     <ClInclude Include="Object\Stage\MoveBlock.h" />
     <ClInclude Include="Object\Item\InvincibleItem.h" />
     <ClInclude Include="Object\Item\HealItem.h" />

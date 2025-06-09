@@ -1,8 +1,10 @@
 #pragma once
 #include "../CharaBase.h"
-#include <vector>
 #include "../../../Utility/InputControl.h"
+#include "HealParticle.h"
+
 #include <map>
+#include <vector>
 
 enum class ActionState { IDLE, WALK, JUMP, DAMAGE };
 
@@ -39,6 +41,8 @@ private:
     std::map<ActionState,std::vector<int>> animation_data;
 	std::map<ActionState, int> animation_frame_count;
 	int animation_frame = 0; //現在のアニメーションフレーム
+
+    std::vector<HealParticle> heal_particles;
 
 
 public:
@@ -82,5 +86,9 @@ public:
 	void InvincibleEffect(Vector2D offset);
 
     void DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness = 1);
+
+	void UpdateHealParticle(HealParticle& particle);
+
+	void DrawHealParticle(const HealParticle& particle, Vector2D offset);
 };
 
