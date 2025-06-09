@@ -109,16 +109,16 @@ void Player::Draw(Vector2D offset, double rate) const
 	DrawFormatString(10, 40, GetColor(255, 255, 255), "invicible_timer :%d", invincible_timer);
 	switch (action_state)
 	{
-	case Player::ActionState::IDLE:
+	case ActionState::IDLE:
 		DrawFormatString(10, 140, GetColor(255, 255, 255), "State: IDLE");
 		break;
-	case Player::ActionState::WALK:
+	case ActionState::WALK:
 		DrawFormatString(10, 140, GetColor(255, 255, 255), "State: WALK");
 		break;
-	case Player::ActionState::JUMP:
+	case ActionState::JUMP:
 		DrawFormatString(10, 140, GetColor(255, 255, 255), "State: JUMP");
 		break;
-	case Player::ActionState::DAMAGE:
+	case ActionState::DAMAGE:
 		DrawFormatString(10, 140, GetColor(255, 255, 255), "State: DAMAGE");
 		break;
 	}
@@ -263,10 +263,10 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 void Player::SaveMoveHistory()
 {
-	MoveRecord record;
+	PlayerMoveRecord record;
 	record.position = this->location;
-	//record.is_jumping = this->is_jump;
 	record.flip = this->flip_flg;
+	record.action_state = this->action_state; // © ‚±‚±‚ğ–Y‚ê‚¸‚ÉI
 
 	move_history.push_back(record);
 }

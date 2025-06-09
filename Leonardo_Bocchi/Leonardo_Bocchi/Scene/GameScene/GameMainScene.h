@@ -18,7 +18,7 @@ private:
 	GameObject* player;	//プレイヤーのポインタ
 	Vector2D goal_pos;
 
-	std::vector<std::vector<MoveRecord>>stage_clear_history; //ステージクリア履歴
+	std::vector<std::vector<PlayerMoveRecord>>stage_clear_history; //ステージクリア履歴
 
 	int back_ground_image; //背景画像
 	int back_ground_img[5];

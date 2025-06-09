@@ -4,6 +4,12 @@
 #include "../../../Utility/InputControl.h"
 #include <map>
 
+enum class ActionState { IDLE, WALK, JUMP, DAMAGE };
+
+struct PlayerMoveRecord : public MoveRecord
+{
+    ActionState action_state;
+};
 
 class Player :
     public CharaBase
@@ -11,7 +17,7 @@ class Player :
 private:
     //std::vector<int> animation_data;//アニメーションデータ
 
-	std::vector<MoveRecord> move_history; //移動履歴
+	std::vector<PlayerMoveRecord> move_history; //移動履歴
 
     int jump_time = 0;
 
@@ -19,7 +25,7 @@ private:
     int damage_timer;
 
     //状態管理
-    enum class ActionState { IDLE, WALK, JUMP, DAMAGE };
+    //enum class ActionState { IDLE, WALK, JUMP, DAMAGE };
     enum class MoveDirection { NONE, LEFT, RIGHT };
 
     ActionState action_state = ActionState::IDLE;
@@ -65,7 +71,7 @@ public:
 	void SaveMoveHistory();
 
 	//移動履歴を取得
-    const std::vector<MoveRecord>& GetMoveHistory() const {
+    const std::vector<PlayerMoveRecord>& GetMoveHistory() const {
         return move_history;
     }
 

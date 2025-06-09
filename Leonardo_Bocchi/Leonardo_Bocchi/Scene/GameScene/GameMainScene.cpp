@@ -295,7 +295,7 @@ void GameMainScene::CreateClone()
 	for (const auto& history : stage_clear_history)
 	{
 		//新しいエネミー（過去のプレイヤー）を生成
-		Enemy* enemy = CreateObject<Enemy>(Vector2D(0.0f, 0.0f) , Vector2D(48.0f, 96.0f));
+		Enemy* enemy = CreateObject<Enemy>(Vector2D(0.0f, 0.0f) , Vector2D(48.0f, 64.0f));
 
 		// 履歴をエネミーにセット
 		enemy->SetReplayHistory(history);

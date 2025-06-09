@@ -1,13 +1,24 @@
 #pragma once
 #include "../CharaBase.h"
 #include <vector>
+#include "../Player/Player.h"
+
+#include <map>
+
 
 class Enemy :
     public CharaBase
 {
 private:
 	//エネミーの状態
-    std::vector<MoveRecord> replay_history;
+    std::vector<PlayerMoveRecord> replay_history;                    // 現在の再生インデックス
+
+    ActionState action_state = ActionState::IDLE;
+
+    std::map<ActionState, std::vector<int>> animation_data;  // アニメーションデータ
+    int animation_frame = 0;
+
+
     int current_frame = 0;
 
     int frame_timer = 0;            // 経過フレーム数
@@ -34,12 +45,14 @@ public:
     //プレイヤーの動き
     void Movement();
     //アニメーション管理
-    void AnimationControl();
+    void AnimationControl(ActionState state);
     //当たった時の挙動
     void OnHitCollision(GameObject* hit_object)override;
 
 	
 	//移動履歴をセット
-    void SetReplayHistory(const std::vector<MoveRecord>& history);
+    void SetReplayHistory(const std::vector<PlayerMoveRecord>& history);
+
+	void LoadEnemyImage();
 };
 
