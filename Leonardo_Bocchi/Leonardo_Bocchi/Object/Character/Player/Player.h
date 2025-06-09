@@ -77,7 +77,10 @@ public:
 
     void ApplyDamage();
 
-
     void LoadPlayerImage();
+
+	void InvincibleEffect(Vector2D offset)const;
+
+    void DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness = 1);
 };
 

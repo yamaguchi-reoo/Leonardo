@@ -167,11 +167,7 @@ void Enemy::LoadEnemyImage()
 	// JUMP
 	auto jump_imgs = rm->GetImages("Resource/Images/Character/Enemy/Enemy-jump/enemy-jump", 2);
 	animation_data[ActionState::JUMP] = jump_imgs;
-
-	// DAMAGEi‚È‚¯‚ê‚ÎÈ—ª‚Å‚àOKj
-	// auto dmg_imgs = rm->GetImages("Resource/Images/Character/Enemy/Enemy-damage/enemy-damage", 1);
-	// animation_data[ActionState::DAMAGE] = dmg_imgs;
-
+;
 	image = animation_data[ActionState::IDLE][0];
 
 }

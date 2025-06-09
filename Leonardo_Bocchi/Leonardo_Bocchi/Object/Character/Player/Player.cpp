@@ -101,6 +101,8 @@ void Player::Draw(Vector2D offset, double rate) const
 	}
 	DrawFormatString(10, 120, GetColor(255, 255, 255), "HP ~ %d", hp);
 
+	InvincibleEffect(offset);
+
 #ifdef _DEBUG
 	//DrawFormatString(10, 120, GetColor(255, 255, 255), "HP ~ %d", hp);
 	DrawFormatString(10, 100, GetColor(255, 255, 255), "%f     %f", velocity.x, velocity.y);
@@ -307,9 +309,76 @@ void Player::LoadPlayerImage()
 	auto jump_imgs = rm->GetImages("Resource/Images/Character/Player/Player-jump/player-jump", 2);
 	animation_data[ActionState::JUMP] = jump_imgs;
 
-	//// DAMAGE
-	//auto dmg_imgs = rm->GetImages("Resource/Images/Character/Player/Player-damage/player-damage", 1);
-	//animation_data[ActionState::DAMAGE] = dmg_imgs;
-
 	image = animation_data[ActionState::IDLE][0];
+}
+
+void Player::InvincibleEffect(Vector2D offset) const
+{
+	if (is_invincible)
+	{
+		int alpha = 255;
+
+		if (invincible_timer >= 180)
+		{
+			int blink_cycle = 10;
+			bool visible = ((invincible_timer / blink_cycle) % 2 == 0);
+			alpha = visible ? 255 : 50;
+		}
+
+		float radius_x = box_size.x * 0.7f;  // X•ûŒü‚Ì”¼Œa
+		float radius_y = box_size.y * 1.0f;  // Y•ûŒü‚Ì”¼Œa (‘È‰~Š´o‚·‚È‚ç­‚µ‘å‚«‚ß)
+
+		Vector2D center = { offset.x + box_size.x / 2, offset.y + box_size.y / 2 - 4.5f };
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+
+		// —Ö‚Á‚©‚Ì‘È‰~‚ğ•`‚­
+		DrawEllipseAA(center.x, center.y, radius_x, radius_y, 64, GetColor(0, 200, 255), false, 4);
+
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+
+}
+
+void Player::DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness)
+{
+	float angle_step = 2.0f * DX_PI_F / num_segments;
+
+	if (fill)
+	{
+		// “à‘¤‚ğ“h‚éê‡‚Í‘½ŠpŒ`‚Æ‚µ‚Ä“h‚é
+		for (int i = 0; i < num_segments; ++i)
+		{
+			float theta1 = angle_step * i;
+			float theta2 = angle_step * (i + 1);
+
+			float x1 = cx + rx * cosf(theta1);
+			float y1 = cy + ry * sinf(theta1);
+
+			float x2 = cx + rx * cosf(theta2);
+			float y2 = cy + ry * sinf(theta2);
+
+			DrawTriangle(cx, cy, x1, y1, x2, y2, color, TRUE);
+		}
+	}
+	else
+	{
+		// ü‚¾‚¯•`‚­i—Ö‚Á‚©j
+		float prev_x = cx + rx * cosf(0);
+		float prev_y = cy + ry * sinf(0);
+
+		for (int i = 1; i <= num_segments; ++i)
+		{
+			float theta = angle_step * i;
+
+			float x = cx + rx * cosf(theta);
+			float y = cy + ry * sinf(theta);
+
+			DrawLine(prev_x, prev_y, x, y, color, line_thickness);
+
+			prev_x = x;
+			prev_y = y;
+		}
+	}
 }
