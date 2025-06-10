@@ -27,39 +27,67 @@ void GoalPoint::Update()
 
 void GoalPoint::Draw(Vector2D offset, double rate)
 {
-	Vector2D center = offset + box_size / 2;
+	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
 
-	// 光のリング
-	if (is_active)
-	{
-		float radius = 40.0f + 8.0f * sinf(effect_timer * 0.2f);
-		int alpha = static_cast<int>(255 * (1.0f - effect_timer / 90.0f));
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-		DrawCircleAA(center.x, center.y, radius, 32, GetColor(0, 255, 255), FALSE);
 
-		// 光の柱
-		DrawBoxAA(center.x - 2, center.y - 48, center.x + 2, center.y + 48, GetColor(0, 200, 255), TRUE);
+    Vector2D center = offset + box_size / 2;
 
-		// パーティクル
-		for (const auto& p : particles)
-		{
-			if (!p.is_active) continue;
+    if (is_active)
+    {
+        float radius_x = 50.0f + 8.0f * sinf(effect_timer * 0.1f);
+        float radius_y = 50.0f + 8.0f * cosf(effect_timer * 0.1f);
+        float ring_angle = effect_timer * 0.05f;
 
-			float t = static_cast<float>(p.timer) / p.duration;
-			int particle_alpha = static_cast<int>(255 * (1.0f - t));
+        Vector2D center = offset + box_size / 2;
 
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, particle_alpha);
-			DrawCircleAA(p.position.x, p.position.y, 3.0f * p.scale, 12, GetColor(0, 255, 255), TRUE);
-		}
+        //半透明の中心グラデーション楕円
+        for (int i = 0; i < 5; ++i)
+        {
+            int alpha = 80 - i * 15;
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+            DrawEllipseAA(center.x, center.y, radius_x * (1.0f - i * 0.15f), radius_y * (1.0f - i * 0.15f), 64, GetColor(100, 200, 255), true, 1);
+        }
 
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	}
+        // 外周の回転楕円リング
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+        for (int i = 0; i < 3; ++i)
+        {
+            float angle_offset = ring_angle + i * DX_PI_F / 3.0f;
+
+            float ring_rx = radius_x + i * 2.0f;
+            float ring_ry = radius_y + i * 2.0f;
+
+            DrawEllipseAA(center.x, center.y, ring_rx, ring_ry, 64, GetColor(0, 255, 255), false, 2);
+        }
+
+        //パーティクル吸い込み
+        for (auto& p : particles)
+        {
+            if (!p.is_active) continue;
+
+            Vector2D dir = center - p.position;
+            dir = dir.Normalize() * 0.5f; // 吸い込み速度
+            p.position += dir;
+
+            float t = static_cast<float>(p.timer) / p.duration;
+            int particle_alpha = static_cast<int>(255 * (1.0f - t));
+
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, particle_alpha);
+            DrawCircleAA(p.position.x, p.position.y, 3.0f * p.scale, 12, GetColor(0, 255, 255), TRUE);
+        }
+
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+    }
 	else
 	{
-		// 通常状態（GoalPoint 表示）
-		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 255, 0), TRUE);
+		// ゴールが非アクティブなときの描画
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+		DrawCircleAA(center.x, center.y, 50.0f, 64, GetColor(200, 200, 200), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
+	__super::Draw(offset, rate);
 }
+
 
 void GoalPoint::Finalize()
 {
@@ -84,4 +112,15 @@ void GoalPoint::CreateParticles()
 		Vector2D pos = center + Vector2D(rand() % 64 - 32, rand() % 64 - 32);
 		particles.emplace_back(pos);
 	}
+}
+
+bool GoalPoint::IsActive() const
+{
+	if (!is_active) return false;
+
+	for (const auto& p : particles)
+	{
+		if (p.is_active) return true;
+	}
+	return false;
 }

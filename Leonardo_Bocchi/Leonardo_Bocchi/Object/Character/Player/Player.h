@@ -85,10 +85,10 @@ public:
 
 	void InvincibleEffect(Vector2D offset);
 
-    void DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness = 1);
-
 	void UpdateHealParticle(HealParticle& particle);
 
 	void DrawHealParticle(const HealParticle& particle, Vector2D offset);
+
+	void PlayerToGoal();
 };
 

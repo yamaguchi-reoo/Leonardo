@@ -3,8 +3,7 @@
 #include "../../common.h"
 #include "../../Object/Character/Player/Player.h"
 #include "../../Object/Character/CharaBase.h"
-#include "../../Object/Gimmick/GoalPoint.h"
-#include "../../Object/Gimmick/GoalParticle.h"
+
 
 
 
@@ -18,7 +17,6 @@ private:
 	int stage_data[STAGE_MAX_HEIGHT][STAGE_MAX_WIDTH];
 
 	GameObject* player;	//プレイヤーのポインタ
-	GoalPoint* goal_point; //ゴールポイントのポインタ
 	Vector2D goal_pos;
 
 	std::vector<std::vector<PlayerMoveRecord>>stage_clear_history; //ステージクリア履歴

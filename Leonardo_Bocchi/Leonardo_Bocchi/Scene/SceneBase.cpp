@@ -55,7 +55,9 @@ eSceneType SceneBase::Update()
 				{
 					clear_count++;
 					//ステージ再生成		
-					//SetStageReload(true);
+					SetStageReload(true);
+
+					goal_point = dynamic_cast<GoalPoint*>(objects[j]);
 				}
 			}
 

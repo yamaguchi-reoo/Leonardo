@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "../Object/GameObject.h"
+#include "../Object/Gimmick/GoalPoint.h"
 
 enum class eSceneType
 {
@@ -14,6 +15,8 @@ class SceneBase
 protected:
 	std::vector<GameObject*>objects;
 	Vector2D camera_location;
+
+	GoalPoint* goal_point = nullptr;	//ゴールポイント
 
 	int clear_count = 0;	//クリアカウント
 	bool stage_reload = false;

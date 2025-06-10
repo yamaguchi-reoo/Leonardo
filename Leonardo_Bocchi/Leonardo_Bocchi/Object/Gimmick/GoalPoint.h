@@ -26,5 +26,7 @@ public:
 
     void CreateParticles();
 
+    bool IsActive() const;
+
 };
 

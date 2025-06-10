@@ -60,6 +60,9 @@ public:
 	void SetDelete() { is_delete = true; }
 
 	int GetHp() { return hp; }
+
+	void DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness = 1);
+
 };
 
 

@@ -246,7 +246,6 @@ void Player::AnimationControl()
 	image = frames[index];
 }
 
-
 void Player::OnHitCollision(GameObject* hit_object)
 {
 	__super::OnHitCollision(hit_object);
@@ -282,16 +281,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	// GOALƒqƒbƒg
 	if (hit_object->GetObjectType() == GOAL)
 	{
-		// ÅŒã‚ÌˆÊ’uEó‘Ô‚ğ1frame‹­§“I‚É‹L˜^
-		SaveMoveHistory();
-
-		// ”CˆÓFŠ®‘S’â~‚µ‚½ó‘Ô‚ğ1frame’Ç‰Á‚·‚éiIDLEó‘Ôj
-		PlayerMoveRecord stop_record;
-		stop_record.position = this->location;     // ƒS[ƒ‹’n“_
-		stop_record.flip = this->flip_flg;
-		stop_record.action_state = ActionState::IDLE; // ~‚Ü‚Á‚Ä‚¢‚éó‘Ô
-
-		move_history.push_back(stop_record);
+		PlayerToGoal();
 	}
 }
 
@@ -301,7 +291,7 @@ void Player::SaveMoveHistory()
 	PlayerMoveRecord record;
 	record.position = this->location;
 	record.flip = this->flip_flg;
-	record.action_state = this->action_state; // © ‚±‚±‚ğ–Y‚ê‚¸‚ÉI
+	record.action_state = this->action_state;
 
 	move_history.push_back(record);
 }
@@ -346,7 +336,7 @@ void Player::InvincibleEffect(Vector2D offset)
 		}
 
 		float radius_x = box_size.x * 0.5f;  // X•ûŒü‚Ì”¼Œa
-		float radius_y = box_size.y * 0.6f;  // Y•ûŒü‚Ì”¼Œa (‘È‰~Š´o‚·‚È‚ç­‚µ‘å‚«‚ß)
+		float radius_y = box_size.y * 0.6f;  // Y•ûŒü‚Ì”¼Œa 
 
 		Vector2D center = { offset.x + box_size.x / 2, offset.y + box_size.y / 2 + 4.5f };
 
@@ -363,48 +353,6 @@ void Player::InvincibleEffect(Vector2D offset)
 	}
 
 
-}
-
-void Player::DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness)
-{
-	float angle_step = 2.0f * DX_PI_F / num_segments;
-
-	if (fill)
-	{
-		// “à‘¤‚ğ“h‚éê‡‚Í‘½ŠpŒ`‚Æ‚µ‚Ä“h‚é
-		for (int i = 0; i < num_segments; ++i)
-		{
-			float theta1 = angle_step * i;
-			float theta2 = angle_step * (i + 1);
-
-			float x1 = cx + rx * cosf(theta1);
-			float y1 = cy + ry * sinf(theta1);
-
-			float x2 = cx + rx * cosf(theta2);
-			float y2 = cy + ry * sinf(theta2);
-
-			DrawTriangle(cx, cy, x1, y1, x2, y2, color, TRUE);
-		}
-	}
-	else
-	{
-		// ü‚¾‚¯•`‚­i—Ö‚Á‚©j
-		float prev_x = cx + rx * cosf(0);
-		float prev_y = cy + ry * sinf(0);
-
-		for (int i = 1; i <= num_segments; ++i)
-		{
-			float theta = angle_step * i;
-
-			float x = cx + rx * cosf(theta);
-			float y = cy + ry * sinf(theta);
-
-			DrawLine(prev_x, prev_y, x, y, color, line_thickness);
-
-			prev_x = x;
-			prev_y = y;
-		}
-	}
 }
 
 void Player::UpdateHealParticle(HealParticle& particle)
@@ -436,4 +384,21 @@ void Player::DrawHealParticle(const HealParticle& particle, Vector2D offset)
 	DrawCircleAA(particle.position.x + offset.x, particle.position.y + offset.y, 3.0f * particle.scale, 12, GetColor(100, 255, 100), true);
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void Player::PlayerToGoal()
+{
+	// ÅŒã‚ÌˆÊ’uEó‘Ô‚ğ1frame‹L˜^
+	SaveMoveHistory();
+
+	//Š®‘S’â~‚µ‚½ó‘Ô‚ğ1frame’Ç‰Á‚·‚é
+	PlayerMoveRecord stop_record;
+	stop_record.position = this->location;     // ƒS[ƒ‹’n“_
+	stop_record.flip = this->flip_flg;
+	stop_record.action_state = ActionState::IDLE; // ~‚Ü‚Á‚Ä‚¢‚éó‘Ô
+
+	move_history.push_back(stop_record);
+
+	velocity = Vector2D(0.0f, 0.0f);
+	g_velocity = 0.0f;
 }

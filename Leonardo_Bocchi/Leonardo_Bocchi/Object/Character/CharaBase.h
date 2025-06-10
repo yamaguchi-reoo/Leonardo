@@ -44,5 +44,6 @@ public:
 	virtual void ApplyGravity(); 
 
 	void SetOnGround(bool flg) { on_ground = flg; }
+
 };
 

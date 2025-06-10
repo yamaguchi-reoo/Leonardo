@@ -38,11 +38,17 @@ eSceneType GameMainScene::Update()
 	//ステージリロード	
 	if (IsStageReload())
 	{
-		//ステージクリア時の処理
-		StageClear();
 
-		//ステージの再読み込み
-		ReLoadStage();
+		if (goal_point && !goal_point->IsActive())
+		{
+			//ステージクリア時の処理
+			StageClear();
+
+			//ステージの再読み込み
+			ReLoadStage();
+		}
+
+
 	}
 	//カメラ更新
 	UpdateCamera();
@@ -65,7 +71,7 @@ eSceneType GameMainScene::Update()
 		}
 	}
 
-	//志望処理
+	//死亡処理
 	if (player->GetHp() <= 0 || player->GetLocation().y > 850.0f)
 	{
 		player->SetDelete();
@@ -217,7 +223,7 @@ void GameMainScene::SetStage()
 			case BLOCK: CreateObject<Block>(pos, Vector2D((float)BOX_SIZE)); break;
 			case PLAYER: CreateObject<Player>(pos, Vector2D(48.0f, 64.0f)); break;
 			case MOVE_BLOCK: CreateObject<MoveBlock>(pos, Vector2D((float)BOX_SIZE, 24.0f)); break;
-			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE * 2)); 
+			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE / 2)); 
 				goal_pos = pos;
 				break;
 			default: break;
@@ -229,7 +235,6 @@ void GameMainScene::SetStage()
 	CreateGimmick();
 
 }
-
 
 void GameMainScene::UpdateCamera()
 {
