@@ -37,6 +37,7 @@ private:
     bool is_invincible;
     int invincible_timer;
 
+    bool is_goal;
 
     std::map<ActionState,std::vector<int>> animation_data;
 	std::map<ActionState, int> animation_frame_count;

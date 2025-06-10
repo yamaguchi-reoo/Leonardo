@@ -223,7 +223,7 @@ void GameMainScene::SetStage()
 			case BLOCK: CreateObject<Block>(pos, Vector2D((float)BOX_SIZE)); break;
 			case PLAYER: CreateObject<Player>(pos, Vector2D(48.0f, 64.0f)); break;
 			case MOVE_BLOCK: CreateObject<MoveBlock>(pos, Vector2D((float)BOX_SIZE, 24.0f)); break;
-			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE / 2)); 
+			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE / 2, (float)BOX_SIZE * 2));
 				goal_pos = pos;
 				break;
 			default: break;
@@ -256,6 +256,7 @@ void GameMainScene::UpdateCamera()
 
 void GameMainScene::StageClear()
 {
+	clear_count++;
 	//ÉvÉåÉCÉÑÅ[ÇéÊìæ
 	Player* p = static_cast<Player*>(player);
 

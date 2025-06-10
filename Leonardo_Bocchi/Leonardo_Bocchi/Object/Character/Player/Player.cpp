@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "../../../Utility/UtilityList.h"
 
-Player::Player() : animation_data(), damage_timer(), is_invincible(false), invincible_timer(0)
+Player::Player() : animation_data(), damage_timer(), is_invincible(false), invincible_timer(0),is_goal(false)
 {
 }
 
@@ -38,6 +38,9 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	animation_frame = 0;
 	animation_count = 0;
 	jump_count = 1;
+
+	is_goal = false;
+	is_invincible = false;
 
 	LoadPlayerImage();
 }
@@ -176,53 +179,54 @@ void Player::HandleInput()
 
 	ActionState next_state = action_state;
 
-	// 左右移動入力
-	if (input->GetButton(XINPUT_BUTTON_DPAD_LEFT))
-	{
-		move = MoveDirection::LEFT;
-		velocity.x -= 0.5f;
-		flip_flg = true;
-		if (on_ground) next_state = ActionState::WALK;
-	}
-	else if (input->GetButton(XINPUT_BUTTON_DPAD_RIGHT))
-	{
-		move = MoveDirection::RIGHT;
-		velocity.x += 0.5f;
-		flip_flg = false;
-		if (on_ground) next_state = ActionState::WALK;
-	}
-	else
-	{
-		move = MoveDirection::NONE;
-		ApplyDeceleration();
-		if (on_ground) next_state = ActionState::IDLE;
-	}
+	if (!is_goal) {
+		// 左右移動入力
+		if (input->GetButton(XINPUT_BUTTON_DPAD_LEFT))
+		{
+			move = MoveDirection::LEFT;
+			velocity.x -= 0.5f;
+			flip_flg = true;
+			if (on_ground) next_state = ActionState::WALK;
+		}
+		else if (input->GetButton(XINPUT_BUTTON_DPAD_RIGHT))
+		{
+			move = MoveDirection::RIGHT;
+			velocity.x += 0.5f;
+			flip_flg = false;
+			if (on_ground) next_state = ActionState::WALK;
+		}
+		else
+		{
+			move = MoveDirection::NONE;
+			ApplyDeceleration();
+			if (on_ground) next_state = ActionState::IDLE;
+		}
 
-	// ジャンプ開始（ジャンプキー押下時 & 地面にいるとき）
-	if (input->GetButtonDown(XINPUT_BUTTON_A) && on_ground)
-	{
-		velocity.y = -4.0f;  // 初速
-		jump_time = 0;
-		on_ground = false;  // ジャンプ直後は空中扱い
-		next_state = ActionState::JUMP;
-	}
+		// ジャンプ開始（ジャンプキー押下時 & 地面にいるとき）
+		if (input->GetButtonDown(XINPUT_BUTTON_A) && on_ground)
+		{
+			velocity.y = -4.0f;  // 初速
+			jump_time = 0;
+			on_ground = false;  // ジャンプ直後は空中扱い
+			next_state = ActionState::JUMP;
+		}
 
-	// 長押しでジャンプ延長
-	if (input->GetButton(XINPUT_BUTTON_A) &&
-		action_state == ActionState::JUMP &&
-		jump_time < 20)
-	{
-		jump_time++;
-		velocity.y -= 0.25f;  // 上昇を追加
-		velocity.y = Max(velocity.y, -9.0f); // 上昇制限
-	}
+		// 長押しでジャンプ延長
+		if (input->GetButton(XINPUT_BUTTON_A) &&
+			action_state == ActionState::JUMP &&
+			jump_time < 20)
+		{
+			jump_time++;
+			velocity.y -= 0.25f;  // 上昇を追加
+			velocity.y = Max(velocity.y, -9.0f); // 上昇制限
+		}
 
-	// 着地チェック → Updateの後に on_ground = true にされる前提
-	if (on_ground && action_state == ActionState::JUMP)
-	{
-		next_state = (Abs(velocity.x) > 0.1f) ? ActionState::WALK : ActionState::IDLE;
+		// 着地チェック → Updateの後に on_ground = true にされる前提
+		if (on_ground && action_state == ActionState::JUMP)
+		{
+			next_state = (Abs(velocity.x) > 0.1f) ? ActionState::WALK : ActionState::IDLE;
+		}
 	}
-
 	// ダメージ中は状態遷移しない
 	if (action_state != ActionState::DAMAGE)
 		action_state = next_state;
@@ -282,6 +286,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	if (hit_object->GetObjectType() == GOAL)
 	{
 		PlayerToGoal();
+		is_goal = true;
 	}
 }
 
@@ -401,4 +406,5 @@ void Player::PlayerToGoal()
 
 	velocity = Vector2D(0.0f, 0.0f);
 	g_velocity = 0.0f;
+	is_invincible = true;
 }

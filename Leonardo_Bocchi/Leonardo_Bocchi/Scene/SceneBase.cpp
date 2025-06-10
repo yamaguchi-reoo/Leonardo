@@ -53,7 +53,7 @@ eSceneType SceneBase::Update()
 				//ゴールに到達した場合
 				if (objects[i]->GetObjectType() == PLAYER && objects[j]->GetObjectType() == GOAL)
 				{
-					clear_count++;
+					//clear_count++;
 					//ステージ再生成		
 					SetStageReload(true);
 
