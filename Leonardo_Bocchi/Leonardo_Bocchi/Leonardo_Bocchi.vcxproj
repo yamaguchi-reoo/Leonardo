@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object\Character\Player\HealParticle.h" />
+    <ClInclude Include="Object\Gimmick\GoalParticle.h" />
     <ClInclude Include="Object\Stage\MoveBlock.h" />
     <ClInclude Include="Object\Item\InvincibleItem.h" />
     <ClInclude Include="Object\Item\HealItem.h" />

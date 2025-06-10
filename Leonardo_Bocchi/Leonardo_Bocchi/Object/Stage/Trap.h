@@ -1,8 +1,20 @@
 #pragma once
 #include "../GameObject.h"
+#include <map>
+#include <vector>
+
 class Trap :
     public GameObject
 {
+private:
+    std::vector<int> animation_data;
+    int animation_frame = 0; //現在のアニメーションフレーム
+
+	int trap_image = NULL;  //トラップの画像
+
+	bool is_active = false; // トラップがアクティブかどうか
+	int effect_timer = 0;   // エフェクトのタイマー
+
 public:
     //初期化処理
     void Initialize(Vector2D _location, Vector2D _box_size) override;
@@ -16,5 +28,6 @@ public:
     //当たった時の挙動
     void OnHitCollision(GameObject* hit_object)override;
 
+    void LoadTrapImage();
 };
 

@@ -57,7 +57,7 @@ eSceneType GameMainScene::Update()
 	if (!is_create)
 	{
 		clone_spawn_timer++;
-		if (clone_spawn_timer >= 45)
+		if (clone_spawn_timer >= 30)
 		{
 			CreateClone();
 			clone_spawn_timer = 0;

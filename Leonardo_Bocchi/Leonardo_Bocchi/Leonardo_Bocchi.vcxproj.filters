@@ -152,5 +152,8 @@
     <ClInclude Include="Object\Character\Player\HealParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Gimmick\GoalParticle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

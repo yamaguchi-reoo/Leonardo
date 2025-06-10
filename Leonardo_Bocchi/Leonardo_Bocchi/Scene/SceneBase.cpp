@@ -55,7 +55,7 @@ eSceneType SceneBase::Update()
 				{
 					clear_count++;
 					//ステージ再生成		
-					SetStageReload(true);
+					//SetStageReload(true);
 				}
 			}
 

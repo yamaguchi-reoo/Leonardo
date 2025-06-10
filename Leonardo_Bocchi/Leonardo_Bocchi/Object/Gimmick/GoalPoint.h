@@ -1,8 +1,16 @@
 #pragma once
 #include "../GameObject.h"
+#include "GoalParticle.h"
+#include <vector>
+
 class GoalPoint :
     public GameObject
 {
+private:
+	std::vector<GoalParticle> particles; // ゴールパーティクルのリスト
+
+	bool is_active = false; // ゴールがアクティブかどうか
+	int effect_timer = 0; // エフェクトのタイマー
 
 public:
     //初期化処理
@@ -15,5 +23,8 @@ public:
     void Finalize()override;
 
     void OnHitCollision(GameObject* hit_object)override;
+
+    void CreateParticles();
+
 };
 

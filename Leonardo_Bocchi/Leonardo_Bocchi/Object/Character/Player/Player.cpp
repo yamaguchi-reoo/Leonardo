@@ -434,7 +434,6 @@ void Player::DrawHealParticle(const HealParticle& particle, Vector2D offset)
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawCircleAA(particle.position.x + offset.x, particle.position.y + offset.y, 3.0f * particle.scale, 12, GetColor(100, 255, 100), true);
-	//DrawCircleAA(center.x, center.y, 3.0f * particle.scale, 12, GetColor(100, 255, 100), true);
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
