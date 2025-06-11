@@ -17,6 +17,7 @@ private:
 	Vector2D goal_pos;
 
 	std::vector<std::vector<PlayerMoveRecord>>stage_clear_history; //ステージクリア履歴
+	std::vector<int> sounds_data;
 
 	int back_ground_image; //背景画像
 	int back_ground_img[5];
@@ -64,6 +65,12 @@ public:
 
 	//ギミックの生成
 	void CreateGimmick();
+
+	void LoadGameMainSound();
+
+	void PlayGameMainSound();
+
+	void StopGameMainSound();
 
 };
 

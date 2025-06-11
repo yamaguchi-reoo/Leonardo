@@ -1,6 +1,7 @@
 #include "GameMainScene.h"
 #include "DxLib.h"
 #include "../../Object/ObjectList.h"
+#include "../../Utility/UtilityList.h"
 
 #include <fstream>
 #include <sstream>
@@ -19,13 +20,13 @@ void GameMainScene::Initialize()
 {
 	//ステージを読み込む
 	LoadStage();
-
 	//カメラの初期位置を設定
 	camera_location = Vector2D(0.0f, 0.0f); //カメラの初期位置を設定
-
 	back_ground_image = LoadGraph("Resource/Images/back_ground.png"); // 背景画像を読み込む
 
 
+	LoadGameMainSound();
+	PlayGameMainSound();   // シーン開始時に BGM をループ再生
 }
 
 eSceneType GameMainScene::Update()
@@ -141,6 +142,10 @@ void GameMainScene::Finalize()
 {
 	DeleteGraph(back_ground_image);
 	back_ground_image = 0;
+
+	StopGameMainSound();   // シーン終了時に停止
+	ResourceManager::GetInstance()->UnloadResourcesAll();
+	ResourceManager::DeleteInstance();
 }
 
 eSceneType GameMainScene::GetNowSceneType() const
@@ -376,6 +381,33 @@ void GameMainScene::CreateGimmick()
 
 		CreateObject<Trap>(pos, Vector2D((float)BOX_SIZE));
 		stage_data[grid_y][grid_x] = TRAP;
+	}
+}
+
+void GameMainScene::LoadGameMainSound()
+{
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	//rm->GetSound("Resource/Sounds/BGM/AS_259735_ストイックなサイバー感4つ打ち.mp3");
+	sounds_data = rm->GetSound("Resource/Sounds/BGM/AS_259735_ストイックなサイバー感4つ打ち.mp3");
+
+}
+
+void GameMainScene::PlayGameMainSound()
+{
+	if (!sounds_data.empty())
+	{
+		int handle = sounds_data[0];
+		ChangeVolumeSoundMem(80, handle);
+
+		PlaySoundMem(handle, DX_PLAYTYPE_LOOP); // BGMをループ再生
+	}
+}
+
+void GameMainScene::StopGameMainSound()
+{
+	if (!sounds_data.empty()) {
+		StopSoundMem(sounds_data[0]);
 	}
 }
 
