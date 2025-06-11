@@ -25,6 +25,13 @@ private:
 	int cursor_frame;
 	int cursor_timer;
 
+	std::vector<int> sounds_data;
+	int title_bgm;
+	int select_se;
+	int decision_se;
+
+
+
 public:
 	TitleScene();
 	~TitleScene();
@@ -36,6 +43,12 @@ public:
 
 	eSceneType GetNowSceneType()const override;
 
-	void LoadTitleImage();
+	void LoadResource();
+
+	void PlaySoundBgm(int _handle,int volume);
+
+	void PlaySoundSe(int _handle, int volume);
+
+	void StopTitleSound();
 };
 

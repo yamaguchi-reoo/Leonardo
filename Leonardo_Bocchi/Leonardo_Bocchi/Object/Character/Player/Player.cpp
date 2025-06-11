@@ -457,7 +457,7 @@ void Player::DrawTeleport(Vector2D offset)
 {
 	Vector2D center = location + box_size / 2;
 	float radius_x = 30.0f + 6.0f * sinf(teleport_timer * 0.1f);
-	float radius_y = 40.0f + 10.0f * cosf(teleport_timer * 0.1f);
+	float radius_y = 50.0f + 10.0f * cosf(teleport_timer * 0.1f);
 
 	// 中心グラデーション楕円
 	for (int i = 0; i < 5; ++i)

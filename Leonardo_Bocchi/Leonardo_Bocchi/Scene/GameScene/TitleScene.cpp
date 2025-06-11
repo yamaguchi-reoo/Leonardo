@@ -7,7 +7,7 @@
 
 #define  MENU_NUM 5
 
-TitleScene::TitleScene() :select_index(0), menu_font(-1), title_font(-1), small_font(-1), cursor_image(-1), cursor_frame(0), cursor_timer(0)
+TitleScene::TitleScene() :select_index(0), menu_font(-1), title_font(-1), small_font(-1), cursor_image(-1), cursor_frame(0), cursor_timer(0), title_bgm(-1), select_se(-1), decision_se(-1)
 {
 }
 
@@ -23,7 +23,7 @@ void TitleScene::Initialize()
     title_font = rm->GetFontHandle("Tepid Terminal", 80);
     small_font = rm->GetFontHandle("Tepid Terminal", 20);
 
-	LoadTitleImage();
+	LoadResource();
 }
 
 eSceneType TitleScene::Update()
@@ -33,14 +33,17 @@ eSceneType TitleScene::Update()
 	if (input->GetKeyDown(KEY_INPUT_DOWN) || input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
 	{
 		select_index = (select_index + 1) % 5;
+        PlaySoundSe(select_se, 70); // 選択音を再生
 	}
 	else if (input->GetKeyDown(KEY_INPUT_UP) || input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
 	{
 		select_index = (select_index - 1 + 5) % 5;
+        PlaySoundSe(select_se, 70); // 選択音を再生
 	}
 
     if (input->GetButtonDown(XINPUT_BUTTON_A))
     {
+        PlaySoundSe(decision_se, 50); // タイトルBGMを再生
         switch (select_index)
         {
         case MENU_START:
@@ -58,6 +61,7 @@ eSceneType TitleScene::Update()
             DxLib_End(); // DxLib を終了してアプリ終了
             exit(0);
         }
+
     }
 
     cursor_timer++;
@@ -116,6 +120,9 @@ void TitleScene::Draw() const
 
 void TitleScene::Finalize()
 {
+	StopTitleSound(); // タイトルBGMを停止
+    ResourceManager::GetInstance()->UnloadResourcesAll();
+    ResourceManager::DeleteInstance();
 }
 
 eSceneType TitleScene::GetNowSceneType() const
@@ -123,11 +130,44 @@ eSceneType TitleScene::GetNowSceneType() const
 	return eSceneType::TITLE;
 }
 
-void TitleScene::LoadTitleImage()
+void TitleScene::LoadResource()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 
+	// アニメーションデータの読み込み
     animation_data = rm->GetImages("Resource/Images/Character/Player/Player-jump/player-jump", 2);
-
     cursor_image = animation_data[0];
+
+    //BGM
+	sounds_data = rm->GetSound("Resource/Sounds/BGM/AS_129910_躍動感のあるテクノサウンド.mp3");
+	title_bgm = sounds_data[0];
+	PlaySoundBgm(title_bgm, 50); // タイトルBGMを再生
+
+	// SE
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1587112_選択・決定音（SFサイバー）1.mp3");
+	select_se = sounds_data[0];
+
+    sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
+    decision_se = sounds_data[0];
+}
+
+void TitleScene::PlaySoundBgm(int _handle, int volume)
+{
+    int handle = _handle;
+    ChangeVolumeSoundMem(volume, _handle);
+
+    PlaySoundMem(_handle, DX_PLAYTYPE_LOOP); // BGMをループ再生
+
+}
+
+void TitleScene::PlaySoundSe(int _handle, int volume)
+{
+    ChangeVolumeSoundMem(volume, _handle);
+    PlaySoundMem(_handle, DX_PLAYTYPE_BACK); // SEは1回のみ再生
+}
+
+
+void TitleScene::StopTitleSound()
+{
+    StopSoundMem(title_bgm);
 }

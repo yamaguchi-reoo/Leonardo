@@ -412,7 +412,7 @@ void GameMainScene::PlayGameMainSound()
 	if (!sounds_data.empty())
 	{
 		int handle = sounds_data[0];
-		ChangeVolumeSoundMem(80, handle);
+		ChangeVolumeSoundMem(70, handle);
 
 		PlaySoundMem(handle, DX_PLAYTYPE_LOOP); // BGM‚ğƒ‹[ƒvÄ¶
 	}

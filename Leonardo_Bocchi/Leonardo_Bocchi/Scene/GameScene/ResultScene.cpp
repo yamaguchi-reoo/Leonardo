@@ -23,6 +23,7 @@ eSceneType ResultScene::Update()
 	{
 		// Aボタンが押されたらゲームメインシーンに移行
 		return eSceneType::TITLE;
+		clear_count = 0;
 	}
 	return __super::Update();
 }
