@@ -2,6 +2,7 @@
 #include "Utility/UtilityList.h"
 #include "Scene/SceneManager.h"
 #include "common.h"
+#include <Windows.h>
 
 #define FRAMERATE 60.0 //フレームレート
 

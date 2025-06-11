@@ -8,7 +8,7 @@
 #include <iostream>
 #include <random>
 
-GameMainScene::GameMainScene() :stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0),clone_spawn_timer(0.0f),is_create(false),is_game_over(false),fade_alpha(0)
+GameMainScene::GameMainScene() :stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0), clone_spawn_timer(0.0f), is_create(false), is_game_over(false), fade_alpha(0), font_48(0), font_24(0)
 {
 }
 
@@ -28,7 +28,7 @@ void GameMainScene::Initialize()
 	//back_ground_img[1] = LoadGraph("Resource/Images/BackGround/city5/4.png");
 	//back_ground_img[2] = LoadGraph("Resource/Images/BackGround/city5/5.png");
 
-	LoadGameMainSound();
+	LoadGameMainResource();
 	PlayGameMainSound();   // シーン開始時に BGM をループ再生
 }
 
@@ -98,6 +98,8 @@ eSceneType GameMainScene::Update()
 
 void GameMainScene::Draw() const
 {
+	ResourceManager* rm = ResourceManager::GetInstance();
+
 	DrawGraph(0, 0, back_ground_image, TRUE); // 背景画像を読み込む
 
 	/*for (int i = 0; i < 2; ++i) {
@@ -130,17 +132,17 @@ void GameMainScene::Draw() const
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 
-		SetFontSize(48);
+		//SetFontSize(48);
 		// ゲームオーバー文字
 		const char* msg = "GAME OVER";
-		int text_width = GetDrawStringWidth(msg, strlen(msg));
-		DrawString((SCREEN_WIDTH - text_width) / 2, SCREEN_HEIGHT / 2 - 50, msg, GetColor(255, 0, 0));
+		int text_width = GetDrawStringWidthToHandle(msg, strlen(msg), font_48);
+		DrawStringToHandle((SCREEN_WIDTH - text_width) / 2, SCREEN_HEIGHT / 2 - 50, msg, GetColor(255, 0, 0), font_48);
 
 
-		SetFontSize(24);
+		//SetFontSize(24);
 		const char* hint = "Press A to continue";
-		int hint_width = GetDrawStringWidth(hint, strlen(hint));
-		DrawString((SCREEN_WIDTH - hint_width) / 2, SCREEN_HEIGHT / 2 + 90, hint, GetColor(255, 255, 255));
+		int hint_width = GetDrawStringWidthToHandle(hint, strlen(hint), font_24);
+		DrawStringToHandle((SCREEN_WIDTH - hint_width) / 2, SCREEN_HEIGHT / 2 + 90, hint, GetColor(255, 255, 255), font_24);
 	}
 
 }
@@ -391,13 +393,18 @@ void GameMainScene::CreateGimmick()
 	}
 }
 
-void GameMainScene::LoadGameMainSound()
+void GameMainScene::LoadGameMainResource()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 
+	//サウンド読込
 	//rm->GetSound("Resource/Sounds/BGM/AS_259735_ストイックなサイバー感4つ打ち.mp3");
 	sounds_data = rm->GetSound("Resource/Sounds/BGM/AS_259735_ストイックなサイバー感4つ打ち.mp3");
 
+	//フォント読込
+	rm->LoadFont("Resource/Font/TepidTerminal.ttf", "Tepid Terminal");
+	font_48 = rm->GetFontHandle("Tepid Terminal", 48);
+	font_24 = rm->GetFontHandle("Tepid Terminal", 24);
 }
 
 void GameMainScene::PlayGameMainSound()

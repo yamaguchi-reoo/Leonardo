@@ -1,6 +1,7 @@
 ﻿#include "TitleScene.h"
 #include "DxLib.h"
 #include "../../Utility/InputControl.h"
+#include "../../Utility/ResourceManager.h"
 
 TitleScene::TitleScene():select_index(0),menu_font(-1),title_font(-1),small_font(-1)
 {
@@ -12,6 +13,9 @@ TitleScene::~TitleScene()
 
 void TitleScene::Initialize()
 {
+	ResourceManager* rm = ResourceManager::GetInstance();
+	rm->LoadFont("Resource/Font/TepidTerminal.ttf", "Tepid Terminal");
+
     menu_font = CreateFontToHandle("ＭＳ ゴシック", 28, 1);
     title_font = CreateFontToHandle("ＭＳ ゴシック", 48, 1);
     small_font = CreateFontToHandle("ＭＳ ゴシック", 18, 1);
@@ -55,6 +59,7 @@ eSceneType TitleScene::Update()
 
 void TitleScene::Draw() const
 {
+    ResourceManager* rm = ResourceManager::GetInstance();
 	DrawFormatString(10, 10, GetColor(255, 255, 255), "Title Scene");
 
     const char* menu_items[] = {
@@ -69,7 +74,7 @@ void TitleScene::Draw() const
     for (int i = 0; i < 4; ++i)
     {
         int color = (i == select_index) ? GetColor(255, 255, 0) : GetColor(255, 255, 255);
-        DrawStringToHandle(550, 250 + i * 40, menu_items[i], color, menu_font);
+        DrawStringToHandle(550, 250 + i * 40, menu_items[i], color, rm->GetFontHandle("Tepid Terminal", 40));
     }
 
     //DrawStringToHandle(480, 500, "↑↓で選択 / Aで決定", GetColor(150, 150, 150), smallFont);

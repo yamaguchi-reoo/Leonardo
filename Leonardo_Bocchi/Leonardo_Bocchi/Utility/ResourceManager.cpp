@@ -190,3 +190,24 @@ void ResourceManager::CreateSoundResource(std::string file_name)
 	// コンテナに読み込んだ音源を追加する
 	sounds_container[file_name].push_back(handle);
 }
+
+void ResourceManager::LoadFont(std::string file_name, std::string font_name)
+{
+	AddFontResourceEx(file_name.c_str(), FR_PRIVATE, NULL);
+
+	
+}
+
+int ResourceManager::GetFontHandle(const std::string& font_name, int size)
+{
+	std::string key = font_name + "_" + std::to_string(size);
+
+	// すでに生成済みか確認
+	auto it = fonts_container.find(key);
+	if (it != fonts_container.end()) return it->second;
+
+	// 未生成なら作成して保存
+	int handle = CreateFontToHandle(font_name.c_str(), size, 0, DX_FONTTYPE_ANTIALIASING);
+	fonts_container[key] = handle;
+	return handle;
+}

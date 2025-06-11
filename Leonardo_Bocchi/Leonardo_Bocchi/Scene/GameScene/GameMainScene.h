@@ -28,6 +28,9 @@ private:
 	bool is_game_over;         // ゲームオーバー状態かどうか
 	int fade_alpha;
 
+	int font_48; //フォント
+	int font_24; //フォント
+
 public:
 	GameMainScene();
 	~GameMainScene();
@@ -66,7 +69,7 @@ public:
 	//ギミックの生成
 	void CreateGimmick();
 
-	void LoadGameMainSound();
+	void LoadGameMainResource();
 
 	void PlayGameMainSound();
 
