@@ -9,12 +9,13 @@ private:
 		MENU_START,
 		MENU_HELP,
 		MENU_RANKING,
+		MENU_CREDITS,
 		MENU_END
 	};
 
 	int select_index;
 
-	int menu_font;
+;	int menu_font;
 	int title_font;
 	int small_font;
 
