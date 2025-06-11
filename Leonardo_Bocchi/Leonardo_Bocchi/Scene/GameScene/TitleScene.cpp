@@ -7,7 +7,7 @@
 
 #define  MENU_NUM 5
 
-TitleScene::TitleScene():select_index(0),menu_font(-1),title_font(-1),small_font(-1)
+TitleScene::TitleScene() :select_index(0), menu_font(-1), title_font(-1), small_font(-1), cursor_image(-1), cursor_frame(0), cursor_timer(0)
 {
 }
 
@@ -22,6 +22,8 @@ void TitleScene::Initialize()
     menu_font = rm->GetFontHandle("Tepid Terminal", 40);
     title_font = rm->GetFontHandle("Tepid Terminal", 80);
     small_font = rm->GetFontHandle("Tepid Terminal", 20);
+
+	LoadTitleImage();
 }
 
 eSceneType TitleScene::Update()
@@ -58,7 +60,15 @@ eSceneType TitleScene::Update()
         }
     }
 
-
+    cursor_timer++;
+	if (cursor_timer >= 10)
+	{
+       if(!animation_data.empty())
+       {
+           cursor_frame = (cursor_frame + 1) % animation_data.size();
+       }
+        cursor_timer = 0;
+	}
 
 	return __super::Update();
 }
@@ -83,22 +93,25 @@ void TitleScene::Draw() const
         int y = 250 + i * 60;
         int color = (i == select_index) ? GetColor(255, 255, 0) : GetColor(255, 255, 255);
 
-        // 選択中は左に四角を表示
         if (i == select_index)
         {
-            DrawBox((SCREEN_WIDTH - width) / 2 - 50, y + 10, (SCREEN_WIDTH - width) / 2 - 30, y + 30, GetColor(255, 255, 0), TRUE);
+            // 左の黄色い四角はアニメーションカーソルに置き換えます
+            int cursor_x = (SCREEN_WIDTH - width) / 2 - 50;
+            int cursor_y = y + 10;
+
+            DrawGraph(cursor_x, cursor_y - 10, animation_data[cursor_frame], TRUE);
+
+            // 下線は残す
             DrawLine((SCREEN_WIDTH - width) / 2, y + 40, (SCREEN_WIDTH - width) / 2 + width, y + 40, GetColor(255, 255, 0));
         }
 
         DrawStringToHandle((SCREEN_WIDTH - width) / 2, y, text, color, menu_font);
     }
 
-    // 操作説明は日本語使えないので英語の簡単な文で
     const char* hint = "UP/DOWN: SELECT  A: DECISION";
     int hint_w = GetDrawStringWidthToHandle(hint, -1, small_font);
     DrawStringToHandle((SCREEN_WIDTH - hint_w) / 2, SCREEN_HEIGHT - 50, hint, GetColor(180, 180, 180), small_font);
 }
-
 
 
 void TitleScene::Finalize()
@@ -108,4 +121,13 @@ void TitleScene::Finalize()
 eSceneType TitleScene::GetNowSceneType() const
 {
 	return eSceneType::TITLE;
+}
+
+void TitleScene::LoadTitleImage()
+{
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+    animation_data = rm->GetImages("Resource/Images/Character/Player/Player-jump/player-jump", 2);
+
+    cursor_image = animation_data[0];
 }

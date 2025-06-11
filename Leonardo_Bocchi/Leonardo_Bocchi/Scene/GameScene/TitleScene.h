@@ -1,5 +1,6 @@
 #pragma once
 #include "../SceneBase.h"
+#include <vector>
 class TitleScene :
     public SceneBase
 {
@@ -19,6 +20,11 @@ private:
 	int title_font;
 	int small_font;
 
+	std::vector<int> animation_data;
+	int cursor_image;
+	int cursor_frame;
+	int cursor_timer;
+
 public:
 	TitleScene();
 	~TitleScene();
@@ -29,5 +35,7 @@ public:
 	void Finalize() override;		//I—¹ˆ—
 
 	eSceneType GetNowSceneType()const override;
+
+	void LoadTitleImage();
 };
 
