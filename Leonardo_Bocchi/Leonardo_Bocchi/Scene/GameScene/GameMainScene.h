@@ -4,9 +4,6 @@
 #include "../../Object/Character/Player/Player.h"
 #include "../../Object/Character/CharaBase.h"
 
-
-
-
 class GameMainScene :
     public SceneBase
 {

@@ -25,11 +25,6 @@ void GameMainScene::Initialize()
 
 	back_ground_image = LoadGraph("Resource/Images/back_ground.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
 
-	//back_ground_img[0] = LoadGraph("Resource/Images/back_ground/Night/1.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
-	//back_ground_img[1] = LoadGraph("Resource/Images/back_ground/Night/2.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
-	//back_ground_img[2] = LoadGraph("Resource/Images/back_ground/Night/3.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
-	//back_ground_img[3] = LoadGraph("Resource/Images/back_ground/Night/4.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
-	//back_ground_img[4] = LoadGraph("Resource/Images/back_ground/Night/5.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
 
 }
 
@@ -99,17 +94,7 @@ eSceneType GameMainScene::Update()
 
 void GameMainScene::Draw() const
 {
-	//”wŒi
-	//DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(150, 150, 150), TRUE); // ”wŒi‚ğ•‚Å“h‚è‚Â‚Ô‚·
 	DrawGraph(0, 0, back_ground_image, TRUE); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
-	//DrawFormatString(10, 10, GetColor(255, 255, 255), "ƒƒCƒ“‰æ–Ê");
-	//DrawFormatString(10, 40, GetColor(255, 255, 255), "ƒXƒe[ƒWƒTƒCƒYF• = %d      ‚‚³ = %d\n", stage_width_num, stage_height_num);
-
-	//for (int i = 0; i < 5; i++)
-	//{
-	//	DrawGraph(0, 0, back_ground_img[i], TRUE); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
-	//}
-
 	__super::Draw();
 
 	DrawFormatString(10, 70, GetColor(255, 255, 255), "LOOP : %d\n", clear_count);
@@ -223,7 +208,7 @@ void GameMainScene::SetStage()
 			case BLOCK: CreateObject<Block>(pos, Vector2D((float)BOX_SIZE)); break;
 			case PLAYER: CreateObject<Player>(pos, Vector2D(48.0f, 64.0f)); break;
 			case MOVE_BLOCK: CreateObject<MoveBlock>(pos, Vector2D((float)BOX_SIZE, 24.0f)); break;
-			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE / 2, (float)BOX_SIZE * 2));
+			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE / 2, (float)BOX_SIZE * 1.5));
 				goal_pos = pos;
 				break;
 			default: break;
