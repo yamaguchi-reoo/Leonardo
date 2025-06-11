@@ -58,7 +58,7 @@ eSceneType GameMainScene::Update()
 	if (!is_create)
 	{
 		clone_spawn_timer++;
-		if (clone_spawn_timer >= 30)
+		if (clone_spawn_timer >= 50)
 		{
 			CreateClone();
 			clone_spawn_timer = 0;
@@ -208,7 +208,7 @@ void GameMainScene::SetStage()
 			case BLOCK: CreateObject<Block>(pos, Vector2D((float)BOX_SIZE)); break;
 			case PLAYER: CreateObject<Player>(pos, Vector2D(48.0f, 64.0f)); break;
 			case MOVE_BLOCK: CreateObject<MoveBlock>(pos, Vector2D((float)BOX_SIZE, 24.0f)); break;
-			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE / 2, (float)BOX_SIZE * 1.5));
+			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE / 2, (float)BOX_SIZE / 1.5));
 				goal_pos = pos;
 				break;
 			default: break;

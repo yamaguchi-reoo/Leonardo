@@ -23,18 +23,6 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 
 	damage_timer = 0;
 
-	//image = LoadGraph("Resource/Images/Character/Player/player.png");
-
-	//ResourceManager* rm = ResourceManager::GetInstance();
-
-	//IDLE状態
-	//animation_data.push_back(rm->GetImages("Resource/Images/Character/Player/Player.png")[0]);
-
-	//MOVE状態
-	//animation_data.push_back(rm->GetImages("Resource/Images/Character/Player/PlayerMove01.png")[0]);
-	//animation_data.push_back(rm->GetImages("Resource/Images/Character/Player/PlayerMove02.png")[0]);
-
-	//image = animation_data[0];
 	animation_frame = 0;
 	animation_count = 0;
 	jump_count = 1;
@@ -43,6 +31,8 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	is_invincible = false;
 
 	LoadPlayerImage();
+
+	PlayerTeleport();
 }
 
 void Player::Update()
@@ -82,6 +72,7 @@ void Player::Update()
 	//アニメーション管理
 	AnimationControl();
 
+	UpdateTeleport();	
 
 	for (auto& particle : heal_particles)
 	{
@@ -122,6 +113,11 @@ void Player::Draw(Vector2D offset, double rate)
 	for (const auto& particle : heal_particles)
 	{
 		DrawHealParticle(particle, offset);
+	}
+
+	if (is_teleport)
+	{
+		DrawTeleport(offset);
 	}
 
 #ifdef _DEBUG
@@ -257,7 +253,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	// エネミーヒット時 OR トラップヒット時
 	if (hit_object->GetObjectType() == ENEMY || hit_object->GetObjectType() == TRAP)
 	{
-		if (!damage_flg && !is_invincible)
+		if (!damage_flg && !is_invincible && !is_goal)
 		{
 			ApplyDamage();
 		}
@@ -406,5 +402,94 @@ void Player::PlayerToGoal()
 
 	velocity = Vector2D(0.0f, 0.0f);
 	g_velocity = 0.0f;
-	is_invincible = true;
+	//is_invincible = true;
+}
+
+void Player::PlayerTeleport()
+{
+	is_goal = true;
+	is_teleport = true;
+	teleport_timer = 0;
+	teleport_particles.clear();
+
+	Vector2D center = location + box_size / 2;
+	// パーティクル生成
+	for (int i = 0; i < 30; ++i)
+	{
+		float angle = (float)i / 30.0f * 2.0f * DX_PI;
+		float radius = 50.0f + rand() % 30;
+		Vector2D spawn_pos = location + Vector2D(cosf(angle), sinf(angle)) * radius;
+		teleport_particles.emplace_back(spawn_pos);
+	}
+}
+
+void Player::UpdateTeleport()
+{
+	if (is_teleport)
+	{
+		velocity = Vector2D(0.0f, 0.0f);
+		g_velocity = 0.0f;
+		//is_invincible = true;
+
+		teleport_timer++;
+		if (teleport_timer >= 30) // 30フレーム後にテレポート終了
+		{
+			is_goal = false;
+			is_teleport = false;
+			teleport_timer = 0;
+		}
+		for (auto& p : teleport_particles)
+		{
+			if (!p.is_active) continue;
+
+			// 吸い込み方向に補正（パーティクルクラスには元々ないので強制上書き）
+			Vector2D dir = location - p.position;
+			dir = dir.Normalize() * 0.5f; // 吸い込み速度
+			p.velocity = dir;
+			//p.position += dir;
+
+			p.Update();
+		}
+	}
+}
+
+void Player::DrawTeleport(Vector2D offset)
+{
+	Vector2D center = location + box_size / 2;
+	float radius_x = 30.0f + 6.0f * sinf(teleport_timer * 0.1f);
+	float radius_y = 40.0f + 10.0f * cosf(teleport_timer * 0.1f);
+
+	// 中心グラデーション楕円
+	for (int i = 0; i < 5; ++i)
+	{
+		int alpha = 80 - i * 15;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawEllipseAA(center.x, center.y,
+			radius_x * (1.0f - i * 0.15f),
+			radius_y * (1.0f - i * 0.15f),
+			64, GetColor(100, 200, 255), TRUE, 1);
+	}
+
+	// 外周リング
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	for (int i = 0; i < 3; ++i)
+	{
+		float ring_rx = radius_x + i * 2.0f;
+		float ring_ry = radius_y + i * 2.0f;
+		DrawEllipseAA(center.x, center.y, ring_rx, ring_ry, 64, GetColor(0, 255, 255), FALSE, 2);
+	}
+
+	// パーティクル描画
+	for (auto& p : teleport_particles)
+	{
+		if (!p.is_active) continue;
+
+		float t = static_cast<float>(p.timer) / p.duration;
+		int alpha = static_cast<int>(255 * (1.0f - t));
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+
+		DrawCircleAA(p.position.x + 16, p.position.y + 5, 3.0f * p.scale, 12, GetColor(0, 255, 255), TRUE);
+	}
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

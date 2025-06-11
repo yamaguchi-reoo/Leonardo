@@ -16,9 +16,14 @@ void GoalPoint::Update()
 	{
 		effect_timer++;
 
-		for (auto& particle : particles)
+		for (auto& p : particles)
 		{
-			particle.Update();
+			if (!p.is_active) continue;
+
+			Vector2D dir = Vector2D(0.0f, 0.0f) - p.position;
+			dir = dir.Normalize() * 0.5f; // ãzÇ¢çûÇ›ë¨ìx
+			p.position += dir;
+			p.Update();
 		}
 
 	}
@@ -59,15 +64,12 @@ void GoalPoint::Draw(Vector2D offset, double rate)
         {
             if (!p.is_active) continue;
 
-            Vector2D dir = center - p.position;
-            dir = dir.Normalize() * 0.5f; // ãzÇ¢çûÇ›ë¨ìx
-            p.position += dir;
-
             float t = static_cast<float>(p.timer) / p.duration;
             int particle_alpha = static_cast<int>(255 * (1.0f - t));
 
             SetDrawBlendMode(DX_BLENDMODE_ALPHA, particle_alpha);
-            DrawCircleAA(p.position.x, p.position.y, 3.0f * p.scale, 12, GetColor(0, 255, 255), TRUE);
+			DrawCircleAA(p.position.x + offset.x, p.position.y + offset.y, 3.0f * p.scale, 12, GetColor(0, 255, 255), TRUE);
+
         }
 
         SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -100,11 +102,15 @@ void GoalPoint::OnHitCollision(GameObject* hit_object)
 
 void GoalPoint::CreateParticles()
 {
+
 	Vector2D center = location + box_size / 2;
-	for (int i = 0; i < 20; ++i)
+
+	for (int i = 0; i < 30; ++i)
 	{
-		Vector2D pos = center + Vector2D(rand() % 64 - 32, rand() % 64 - 32);
-		particles.emplace_back(pos);
+		float angle = static_cast<float>(i) / 30.0f * 2.0f * DX_PI;
+		float radius = 50.0f + rand() % 30;
+		Vector2D spawn_pos = Vector2D(cosf(angle), sinf(angle)) * radius;
+		particles.emplace_back(spawn_pos);
 	}
 }
 

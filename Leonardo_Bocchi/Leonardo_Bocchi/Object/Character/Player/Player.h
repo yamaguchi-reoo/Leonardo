@@ -2,6 +2,7 @@
 #include "../CharaBase.h"
 #include "../../../Utility/InputControl.h"
 #include "HealParticle.h"
+#include "../../Gimmick/GoalParticle.h"
 
 #include <map>
 #include <vector>
@@ -30,7 +31,7 @@ private:
     //enum class ActionState { IDLE, WALK, JUMP, DAMAGE };
     enum class MoveDirection { NONE, LEFT, RIGHT };
 
-    ActionState action_state = ActionState::IDLE;
+    ActionState action_state = ActionState::JUMP;
     MoveDirection move = MoveDirection::NONE;
 
 
@@ -45,6 +46,10 @@ private:
 
     std::vector<HealParticle> heal_particles;
 
+
+	bool is_teleport = false; // テレポート中かどうか
+	int teleport_timer = 0; // テレポートのタイマー
+    std::vector<GoalParticle> teleport_particles;
 
 public:
     Player();
@@ -91,5 +96,11 @@ public:
 	void DrawHealParticle(const HealParticle& particle, Vector2D offset);
 
 	void PlayerToGoal();
+
+    void PlayerTeleport();
+
+	void UpdateTeleport();
+
+	void DrawTeleport(Vector2D offset);
 };
 
