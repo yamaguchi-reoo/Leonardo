@@ -22,8 +22,11 @@ void GameMainScene::Initialize()
 	LoadStage();
 	//ƒJƒƒ‰‚Ì‰ŠúˆÊ’u‚ğİ’è
 	camera_location = Vector2D(0.0f, 0.0f); //ƒJƒƒ‰‚Ì‰ŠúˆÊ’u‚ğİ’è
-	back_ground_image = LoadGraph("Resource/Images/back_ground.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
-
+	//back_ground_image = LoadGraph("Resource/Images/back_ground.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
+	back_ground_image = LoadGraph("Resource/Images/BackGround/Base_Color.png"); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
+	//back_ground_img[0] = LoadGraph("Resource/Images/BackGround/city5/3.png");
+	//back_ground_img[1] = LoadGraph("Resource/Images/BackGround/city5/4.png");
+	//back_ground_img[2] = LoadGraph("Resource/Images/BackGround/city5/5.png");
 
 	LoadGameMainSound();
 	PlayGameMainSound();   // ƒV[ƒ“ŠJn‚É BGM ‚ğƒ‹[ƒvÄ¶
@@ -96,6 +99,10 @@ eSceneType GameMainScene::Update()
 void GameMainScene::Draw() const
 {
 	DrawGraph(0, 0, back_ground_image, TRUE); // ”wŒi‰æ‘œ‚ğ“Ç‚İ‚Ş
+
+	/*for (int i = 0; i < 2; ++i) {
+		DrawGraph(0, 0, back_ground_img[i], TRUE);
+	}*/
 	__super::Draw();
 
 	DrawFormatString(10, 70, GetColor(255, 255, 255), "LOOP : %d\n", clear_count);
