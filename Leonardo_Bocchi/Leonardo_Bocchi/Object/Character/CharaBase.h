@@ -2,6 +2,7 @@
 #include "../GameObject.h"
 #include "../../Utility/UserTemplate.h"
 #include <vector>
+#include "Player/PlayerSoundManager.h"
 
 
 struct MoveRecord {
@@ -17,6 +18,7 @@ protected:
 	float g_velocity = 0.0f;         //重力加速度
 	float max_fall_speed = 0.0f;     //最大落下速度
 	bool on_ground = false;           //地面にいるかどうか
+	bool was_on_ground = false;  // 前フレームの着地状態
 
 
 	int jump_count = 0;
@@ -26,6 +28,7 @@ protected:
 	int animation_count = 0;    //アニメーションカウント
 
 	std::vector<GameObject*> hit_objects;
+	PlayerSoundManager sound_manager; // プレイヤーのサウンドマネージャー
 public:
 	//初期化処理
 	virtual void Initialize(Vector2D _location, Vector2D _box_size) override;

@@ -12,6 +12,9 @@ void CharaBase::Initialize(Vector2D _location, Vector2D _box_size)
 
 void CharaBase::Update()
 {
+    // 前のフレームの地面状態を保存
+    was_on_ground = on_ground;
+
     on_ground = false;
 
 	//共通の重力適用
@@ -58,6 +61,10 @@ void CharaBase::OnHitCollision(GameObject* hit_object)
 
         if (depth_y < depth_x) {
             if (diff.y < 0) {
+                // 着地判定
+                if (!was_on_ground) {
+                    sound_manager.PlaySoundSE(SoundType::LAND, 40, true);
+                }
                 on_ground = true;
                 location.y -= depth_y;
                 velocity.y = 0.0f;

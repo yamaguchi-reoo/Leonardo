@@ -57,7 +57,6 @@ private:
 	int teleport_timer = 0; // テレポートのタイマー
     std::vector<GoalParticle> teleport_particles;
 
-	PlayerSoundManager sound_manager; // プレイヤーのサウンドマネージャー
     int walk_se_timer = 0;
     const int walk_se_interval = 30;
 public:

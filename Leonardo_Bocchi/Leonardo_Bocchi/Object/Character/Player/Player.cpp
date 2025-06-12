@@ -207,6 +207,9 @@ void Player::HandleInput()
 			jump_time = 0;
 			on_ground = false;  // ジャンプ直後は空中扱い
 			next_state = ActionState::JUMP;
+
+			// ジャンプSEを鳴らす
+			sound_manager.PlaySoundSE(SoundType::JUMP, 25, true);
 		}
 
 		// 長押しでジャンプ延長
@@ -235,17 +238,18 @@ void Player::HandleInput()
 	}
 
 
-	// WALK中の足音SE処理
-	if (action_state == ActionState::WALK) {
-		walk_se_timer++;
-		if (walk_se_timer >= walk_se_interval) {
-			sound_manager.PlaySoundSE(SoundType::WALK, 70, true);  // 1回再生
-			walk_se_timer = 0;
-		}
-	}
-	else {
-		walk_se_timer = walk_se_interval; // 次にWALKになったらすぐ鳴るように
-	}
+	//// WALK中の足音SE処理
+	//if (action_state == ActionState::WALK && on_ground) {
+	//	walk_se_timer++;
+	//	if (walk_se_timer >= walk_se_interval) {
+	//		sound_manager.PlaySoundSE(SoundType::WALK, 50, true);  // 1回再生
+	//		walk_se_timer = 0;
+	//	}
+	//}
+	//else {
+	//	walk_se_timer = walk_se_interval; // 次にWALKになったらすぐ鳴るように
+	//}
+
 }
 
 void Player::AnimationControl()
@@ -258,6 +262,26 @@ void Player::AnimationControl()
 
 	int index = (animation_frame / 10) % frames.size();
 	image = frames[index];
+
+	int frame_index = (animation_frame / 10) % frames.size();
+
+	static int prev_frame_index = -1;
+
+	if (action_state == ActionState::WALK && on_ground) {
+		// 足音を鳴らすべき画像のインデックス
+		const std::vector<int> footstep_frames = { 1, 4 };
+
+		if (frame_index != prev_frame_index) {
+			for (int footstep_frame : footstep_frames) {
+				if (frame_index == footstep_frame) {
+					sound_manager.PlaySoundSE(SoundType::WALK, 50, true);
+					break;
+				}
+			}
+		}
+	}
+	prev_frame_index = frame_index;
+
 }
 
 void Player::OnHitCollision(GameObject* hit_object)
@@ -313,6 +337,7 @@ void Player::SaveMoveHistory()
 
 void Player::ApplyDamage()
 {
+	sound_manager.PlaySoundSE(SoundType::DAMAGE, 70, true); // ダメージ音
 	damage_flg = true;
 	hp--;
 
@@ -382,8 +407,6 @@ void Player::UpdateHealParticle(HealParticle& particle)
 		// ライフタイム終了で非アクティブに
 		particle.is_active = false; 
 	}
-
-
 }
 
 void Player::DrawHealParticle(const HealParticle& particle, Vector2D offset)

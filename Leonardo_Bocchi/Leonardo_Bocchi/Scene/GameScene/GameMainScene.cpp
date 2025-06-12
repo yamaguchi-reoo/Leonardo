@@ -29,7 +29,7 @@ void GameMainScene::Initialize()
 	//back_ground_img[2] = LoadGraph("Resource/Images/BackGround/city5/5.png");
 
 	LoadGameMainResource();
-	PlayGameMainSound();   // シーン開始時に BGM をループ再生
+	//PlayGameMainSound();   // シーン開始時に BGM をループ再生
 }
 
 eSceneType GameMainScene::Update()
