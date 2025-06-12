@@ -100,9 +100,6 @@ public:
     // プレイヤー画像の読み込み処理
     void LoadPlayerImage();
 
-	// プレイヤーのサウンドを読み込む処理
-	void LoadPlayerSound();
-
     // 無敵状態のエフェクト描画
     void InvincibleEffect(Vector2D offset);
 

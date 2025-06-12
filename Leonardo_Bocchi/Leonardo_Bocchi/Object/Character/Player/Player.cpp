@@ -337,12 +337,6 @@ void Player::LoadPlayerImage()
 	image = animation_data[ActionState::IDLE][0];
 }
 
-void Player::LoadPlayerSound()
-{
-	ResourceManager* rm = ResourceManager::GetInstance();
-
-}
-
 void Player::InvincibleEffect(Vector2D offset) 
 {
 	if (is_invincible)
@@ -372,8 +366,6 @@ void Player::InvincibleEffect(Vector2D offset)
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);		
 
 	}
-
-
 }
 
 void Player::UpdateHealParticle(HealParticle& particle)
