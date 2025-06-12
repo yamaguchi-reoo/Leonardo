@@ -437,6 +437,7 @@ void Player::PlayerToGoal()
 
 	move_history.push_back(stop_record);
 
+	//sound_manager.PlaySoundSE(SoundType::GOAL, 50, true); // ÉSÅ[Éãâπ
 	velocity = Vector2D(0.0f, 0.0f);
 	g_velocity = 0.0f;
 	//is_invincible = true;
