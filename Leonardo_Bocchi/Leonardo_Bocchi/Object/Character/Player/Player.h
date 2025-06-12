@@ -7,8 +7,10 @@
 #include <map>
 #include <vector>
 
+//プレイヤーの行動状態を表す列挙型
 enum class ActionState { IDLE, WALK, JUMP, DAMAGE };
 
+//移動履歴の構造体
 struct PlayerMoveRecord : public MoveRecord
 {
     ActionState action_state;
@@ -27,12 +29,11 @@ private:
     //ダメージを受けている時間
     int damage_timer;
 
-    //状態管理
-    //enum class ActionState { IDLE, WALK, JUMP, DAMAGE };
+    //プレイヤーの向き（移動方向）を管理
     enum class MoveDirection { NONE, LEFT, RIGHT };
 
-    ActionState action_state = ActionState::JUMP;
-    MoveDirection move = MoveDirection::NONE;
+    ActionState action_state = ActionState::JUMP;   // 現在の行動状態
+    MoveDirection move = MoveDirection::NONE;       // 現在の移動方向
 
 
     bool is_invincible;
@@ -41,9 +42,13 @@ private:
     bool is_goal;
 
     std::map<ActionState,std::vector<int>> animation_data;
+
+    // 各行動状態のアニメーションのフレーム数
 	std::map<ActionState, int> animation_frame_count;
+
 	int animation_frame = 0; //現在のアニメーションフレーム
 
+    //回復パーティクルの管理配列
     std::vector<HealParticle> heal_particles;
 
 
@@ -85,22 +90,31 @@ public:
         return move_history;
     }
 
+    // ダメージを受けた際の処理
     void ApplyDamage();
 
+    // プレイヤー画像の読み込み処理
     void LoadPlayerImage();
 
-	void InvincibleEffect(Vector2D offset);
+    // 無敵状態のエフェクト描画
+    void InvincibleEffect(Vector2D offset);
 
-	void UpdateHealParticle(HealParticle& particle);
+    // 回復パーティクルの更新処理
+    void UpdateHealParticle(HealParticle& particle);
 
-	void DrawHealParticle(const HealParticle& particle, Vector2D offset);
+    // 回復パーティクルの描画処理
+    void DrawHealParticle(const HealParticle& particle, Vector2D offset);
 
-	void PlayerToGoal();
+    // プレイヤーがゴールした際の処理
+    void PlayerToGoal();
 
+    // プレイヤーのテレポート処理開始
     void PlayerTeleport();
 
-	void UpdateTeleport();
+    // テレポート処理の更新（タイマー管理など）
+    void UpdateTeleport();
 
-	void DrawTeleport(Vector2D offset);
+    // テレポートエフェクトの描画
+    void DrawTeleport(Vector2D offset);
 };
 

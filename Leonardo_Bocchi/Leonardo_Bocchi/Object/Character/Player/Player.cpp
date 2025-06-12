@@ -227,8 +227,8 @@ void Player::HandleInput()
 	if (action_state != ActionState::DAMAGE)
 		action_state = next_state;
 
-	if (action_state != next_state)
-	{
+	if (action_state != next_state) {
+		action_state = next_state;
 		animation_frame = 0;
 	}
 
