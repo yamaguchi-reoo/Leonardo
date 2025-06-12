@@ -300,6 +300,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	// 回復アイテムヒット時
 	if (hit_object->GetObjectType() == HEAL)
 	{
+		sound_manager.PlaySoundSE(SoundType::HEAL, 50, true); // 回復音
 		hp += 1;
 		for (int i = 0; i < 10; ++i)
 		{
@@ -310,6 +311,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	// 無敵アイテムヒット時
 	if (hit_object->GetObjectType() == INVINCIBLE)
 	{
+		sound_manager.PlaySoundSE(SoundType::INVINCIBLE, 50, true); //バリア音
 		if (!is_invincible)
 		{
 			is_invincible = true;

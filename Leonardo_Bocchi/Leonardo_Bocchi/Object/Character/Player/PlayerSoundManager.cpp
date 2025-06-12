@@ -11,6 +11,10 @@ void PlayerSoundManager::LoadSounds()
 	sound_map[SoundType::JUMP] = rm->GetSound("Resource/Sounds/SE/Player/AS_14458_レトロゲームの効果音。ジャンプ.mp3");
 	sound_map[SoundType::LAND] = rm->GetSound("Resource/Sounds/SE/Player/AS_52495_ジャンプの着地（スタッ）.mp3");
 	sound_map[SoundType::DAMAGE] = rm->GetSound("Resource/Sounds/SE/Player/AS_1458605_ドンッ＿（ダメージを受ける音）.mp3");
+	sound_map[SoundType::HEAL] = rm->GetSound("Resource/Sounds/SE/Player/AS_1272924_キラキラ、回復音_D.mp3");
+	sound_map[SoundType::INVINCIBLE] = rm->GetSound("Resource/Sounds/SE/Player/AS_1090667_スキル使用、バフ、シールド、バリア.mp3");
+	sound_map[SoundType::GOAL] = rm->GetSound("Resource/Sounds/SE/Player/AS_332658_ワープ_エナジー系（シュワーン、シューン.mp3");
+
 }
 
 void PlayerSoundManager::PlaySoundSE(SoundType sound_type, int volume, bool flg)
