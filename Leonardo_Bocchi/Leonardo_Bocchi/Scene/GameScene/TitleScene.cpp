@@ -7,7 +7,7 @@
 
 #define  MENU_NUM 5
 
-TitleScene::TitleScene() :select_index(0), menu_font(-1), title_font(-1), small_font(-1), cursor_image(-1), cursor_frame(0), cursor_timer(0), title_bgm(-1), select_se(-1), decision_se(-1)
+TitleScene::TitleScene() :select_index(0), menu_font(-1), title_font(-1), small_font(-1), cursor_image(-1), cursor_frame(0), cursor_timer(0), title_bgm(-1), select_se(-1), decision_se(-1), is_decided(false), decision_timer(-1), next_scene(eSceneType::TITLE)
 {
 }
 
@@ -30,6 +30,20 @@ eSceneType TitleScene::Update()
 {
 	InputControl* input = InputControl::GetInstance();
 
+    //効果音再生中は何もしないで、再生完了を待つ
+    if (is_decided)
+    {
+		decision_timer++;
+        if (decision_timer >= 30)
+        {
+            return next_scene; // 効果音が終わったら遷移
+        }
+        else
+        {
+            return eSceneType::TITLE; // 待機
+        }
+    }
+
 	if (input->GetKeyDown(KEY_INPUT_DOWN) || input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
 	{
 		select_index = (select_index + 1) % 5;
@@ -41,13 +55,18 @@ eSceneType TitleScene::Update()
         PlaySoundSe(select_se, 70); // 選択音を再生
 	}
 
+
     if (input->GetButtonDown(XINPUT_BUTTON_A))
     {
         PlaySoundSe(decision_se, 50); // タイトルBGMを再生
+        is_decided = true;
+        decision_timer = 0;
+
         switch (select_index)
         {
         case MENU_START:
-            return eSceneType::GAME_MAIN;
+            //return eSceneType::GAME_MAIN;
+            next_scene = eSceneType::GAME_MAIN;
         case MENU_HELP:
             // 仮にヘルプもタイトルへ戻す
             return eSceneType::TITLE;

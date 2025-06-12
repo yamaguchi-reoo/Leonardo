@@ -28,7 +28,11 @@ private:
 	std::vector<int> sounds_data;
 	int title_bgm;
 	int select_se;
+
 	int decision_se;
+	bool is_decided;
+	int decision_timer;
+	eSceneType next_scene;
 
 
 
