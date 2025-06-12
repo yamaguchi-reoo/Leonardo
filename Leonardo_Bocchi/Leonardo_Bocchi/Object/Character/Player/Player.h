@@ -3,6 +3,7 @@
 #include "../../../Utility/InputControl.h"
 #include "HealParticle.h"
 #include "../../Gimmick/GoalParticle.h"
+#include "PlayerSoundManager.h"
 
 #include <map>
 #include <vector>
@@ -56,6 +57,9 @@ private:
 	int teleport_timer = 0; // テレポートのタイマー
     std::vector<GoalParticle> teleport_particles;
 
+	PlayerSoundManager sound_manager; // プレイヤーのサウンドマネージャー
+    int walk_se_timer = 0;
+    const int walk_se_interval = 30;
 public:
     Player();
     ~Player();
@@ -95,6 +99,9 @@ public:
 
     // プレイヤー画像の読み込み処理
     void LoadPlayerImage();
+
+	// プレイヤーのサウンドを読み込む処理
+	void LoadPlayerSound();
 
     // 無敵状態のエフェクト描画
     void InvincibleEffect(Vector2D offset);

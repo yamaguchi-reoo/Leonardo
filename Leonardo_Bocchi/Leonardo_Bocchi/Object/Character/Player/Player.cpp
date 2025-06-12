@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "../../../Utility/UtilityList.h"
 
+
 Player::Player() : animation_data(), damage_timer(), is_invincible(false), invincible_timer(0),is_goal(false)
 {
 }
@@ -30,9 +31,10 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	is_goal = false;
 	is_invincible = false;
 
+	sound_manager.LoadSounds();
 	LoadPlayerImage();
-
 	PlayerTeleport();
+
 }
 
 void Player::Update()
@@ -232,6 +234,18 @@ void Player::HandleInput()
 		animation_frame = 0;
 	}
 
+
+	// WALKíÜÇÃë´âπSEèàóù
+	if (action_state == ActionState::WALK) {
+		walk_se_timer++;
+		if (walk_se_timer >= walk_se_interval) {
+			sound_manager.PlaySoundSE(SoundType::WALK, 70, true);  // 1âÒçƒê∂
+			walk_se_timer = 0;
+		}
+	}
+	else {
+		walk_se_timer = walk_se_interval; // éüÇ…WALKÇ…Ç»Ç¡ÇΩÇÁÇ∑ÇÆñ¬ÇÈÇÊÇ§Ç…
+	}
 }
 
 void Player::AnimationControl()
@@ -321,6 +335,12 @@ void Player::LoadPlayerImage()
 	animation_data[ActionState::JUMP] = jump_imgs;
 
 	image = animation_data[ActionState::IDLE][0];
+}
+
+void Player::LoadPlayerSound()
+{
+	ResourceManager* rm = ResourceManager::GetInstance();
+
 }
 
 void Player::InvincibleEffect(Vector2D offset) 
@@ -421,6 +441,7 @@ void Player::PlayerTeleport()
 		Vector2D spawn_pos = location + Vector2D(cosf(angle), sinf(angle)) * radius;
 		teleport_particles.emplace_back(spawn_pos);
 	}
+	sound_manager.PlaySoundSE(SoundType::TELEPORT, 50, true);
 }
 
 void Player::UpdateTeleport()
