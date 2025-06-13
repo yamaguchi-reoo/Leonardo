@@ -37,7 +37,8 @@ eSceneType ResultScene::Update()
 	if (input->GetButtonDown(XINPUT_BUTTON_A))
 	{
 		// Aボタンが押されたらゲームメインシーンに移行
-		return eSceneType::TITLE;
+		//return eSceneType::TITLE;
+		return eSceneType::NAME_INPUT;
 		clear_count = 0;
 	}
 	return __super::Update();

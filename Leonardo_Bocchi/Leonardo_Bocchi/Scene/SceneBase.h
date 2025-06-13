@@ -9,6 +9,7 @@ enum class eSceneType
 	GAME_MAIN,
 	RESULT,
 	RANKING,
+	NAME_INPUT,
 };
 
 class SceneBase

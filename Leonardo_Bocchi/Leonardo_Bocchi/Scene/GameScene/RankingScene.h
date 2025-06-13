@@ -2,11 +2,6 @@
 #include "../SceneBase.h"
 #include <string>
 
-struct RankingEntry
-{
-	std::string name;  // プレイヤー名
-	int score;        // スコア
-};
 
 class RankingScene :
 	public SceneBase
