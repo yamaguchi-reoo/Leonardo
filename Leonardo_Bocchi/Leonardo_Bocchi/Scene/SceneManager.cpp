@@ -5,6 +5,7 @@
 #include "GameScene/ResultScene.h"
 #include "GameScene/RankingScene.h"
 #include "GameScene/NameInputScene.h"
+#include "GameScene/HelpScene.h"
 
 
 SceneManager::SceneManager() :current_scene(nullptr)
@@ -86,6 +87,8 @@ SceneBase* SceneManager::CreateScene(eSceneType type)
 		return dynamic_cast<SceneBase*>(new RankingScene());
 	case eSceneType::NAME_INPUT:
 		return dynamic_cast<SceneBase*>(new NameInputScene());
+	case eSceneType::HELP:
+		return dynamic_cast<SceneBase*>(new HelpScene());
 	default:
 		return nullptr;
 	}

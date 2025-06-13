@@ -1,13 +1,11 @@
 #pragma once
 #include "../SceneBase.h"
-#include <string>
-
-class RankingScene :
-	public SceneBase
+class HelpScene :
+    public SceneBase
 {
 public:
-	RankingScene();
-	~RankingScene();
+	HelpScene();
+	~HelpScene();
 
 	void Initialize() override;		//‰Šú‰»ˆ—
 	eSceneType Update() override;	//XVˆ—

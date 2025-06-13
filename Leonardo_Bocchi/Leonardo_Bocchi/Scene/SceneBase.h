@@ -10,6 +10,9 @@ enum class eSceneType
 	RESULT,
 	RANKING,
 	NAME_INPUT,
+	HELP,
+	CREDITS,
+	END
 };
 
 class SceneBase

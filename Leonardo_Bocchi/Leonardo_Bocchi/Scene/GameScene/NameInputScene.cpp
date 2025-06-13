@@ -59,7 +59,7 @@ void NameInputScene::Finalize()
 
 eSceneType NameInputScene::GetNowSceneType() const
 {
-	return eSceneType();
+	return eSceneType::NAME_INPUT; // 現在のシーンタイプを返す
 }
 
 void NameInputScene::HandleInput()

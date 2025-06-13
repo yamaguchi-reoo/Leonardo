@@ -67,17 +67,17 @@ eSceneType TitleScene::Update()
         case MENU_START:
             //return eSceneType::GAME_MAIN;
             next_scene = eSceneType::GAME_MAIN;
+			break;
         case MENU_HELP:
-            // 仮にヘルプもタイトルへ戻す
-            return eSceneType::TITLE;
-            break;
+			next_scene = eSceneType::HELP; // ヘルプシーンへ移行
+			break;
         case MENU_RANKING:
 			// ランキングシーンへ移行
 			next_scene = eSceneType::RANKING;
+			break;
 		case MENU_CREDITS: 
-			// 仮にクレジットもタイトルへ戻す
-			return eSceneType::TITLE;
-            break;
+			next_scene = eSceneType::RANKING; // クレジットシーンへ移行
+			break;
         case MENU_END:
             DxLib_End(); // DxLib を終了してアプリ終了
             exit(0);
