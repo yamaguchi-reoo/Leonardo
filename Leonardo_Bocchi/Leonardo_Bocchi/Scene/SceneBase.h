@@ -7,7 +7,8 @@ enum class eSceneType
 {
 	TITLE,
 	GAME_MAIN,
-	RESULT
+	RESULT,
+	RANKING,
 };
 
 class SceneBase
