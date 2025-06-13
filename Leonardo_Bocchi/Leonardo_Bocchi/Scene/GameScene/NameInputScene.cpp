@@ -10,8 +10,8 @@ void NameInputScene::Initialize()
 	// キー配列作成
 	for (char c = 'A'; c <= 'Z'; ++c) keys.push_back(std::string(1, c));
 	for (char c = '0'; c <= '9'; ++c) keys.push_back(std::string(1, c));
-	keys.push_back("Space");
-	keys.push_back("Delete");
+	keys.push_back("Spa");
+	keys.push_back("Del");
 	keys.push_back("OK");
 
 	grid_width = 10; // 必要なら明示的にセット
@@ -45,8 +45,9 @@ void NameInputScene::Draw() const
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 	// 名前表示
-	//DrawFormatString(240, 100, GetColor(255, 255, 255), "NAME : %s_", player_name.c_str());
-	DrawFormatStringToHandle(240, 100, GetColor(255, 255, 255), rm->GetFontHandle("Tepid Terminal", 24), "NAME : % s_", player_name.c_str());
+	std::string display_text = "NAME : " + player_name + "_";
+	int text_width = GetDrawStringWidthToHandle(display_text.c_str(), -1, rm->GetFontHandle("Tepid Terminal", 24));
+	DrawFormatStringToHandle((SCREEN_WIDTH - text_width) / 2, 100, GetColor(255, 255, 255), rm->GetFontHandle("Tepid Terminal", 24), "NAME : % s_", player_name.c_str());
 
 	// キーボード描画
 	DrawKeyboard();
@@ -130,11 +131,20 @@ void NameInputScene::HandleInput()
 void NameInputScene::DrawKeyboard() const
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
+	int handle = rm->GetFontHandle("Tepid Terminal", 24);
 
-	const int start_x = 100; // キーボードの開始X座標
-	const int start_y = 150; // キーボードの開始Y座標
-	const int key_size = 48; // キーのサイズ
-	const int padding = 10; // キー間のパディング
+	const int key_size = 48;
+	const int padding = 10;
+	const int key_width_total = key_size + padding;
+
+	int total_columns = grid_width;
+	int total_rows = (keys.size() + grid_width - 1) / grid_width;
+
+	int total_width = total_columns * key_width_total - padding;
+	int screen_width = 1280;
+	int start_x = (screen_width - total_width) / 2;
+
+	const int start_y = 150;
 
 	for (int i = 0; i < keys.size(); ++i)
 	{
@@ -143,13 +153,10 @@ void NameInputScene::DrawKeyboard() const
 		int pos_x = start_x + x * (key_size + padding);
 		int pos_y = start_y + y * (key_size + padding);
 
-		// カーソルがある位置は赤、それ以外は白
 		int color = (cursor_x == x && cursor_y == y) ? GetColor(255, 0, 0) : GetColor(255, 255, 255);
 
-		DrawBox(pos_x, pos_y, pos_x + key_size, pos_y + key_size, color, TRUE); // カーソル位置を反映
-
-		//DrawFormatString(pos_x + 10, pos_y + 10, GetColor(0, 0, 0), "%s", keys[i].c_str()); // キーのテキスト
-
-		DrawFormatStringToHandle(pos_x + 10, pos_y + 10, GetColor(0, 0, 0), rm->GetFontHandle("Tepid Terminal", 24), "%s", keys[i].c_str());
+		DrawBox(pos_x, pos_y, pos_x + key_size, pos_y + key_size, color, TRUE);
+		DrawFormatStringToHandle(pos_x + 10, pos_y + 10, GetColor(0, 0, 0), handle, "%s", keys[i].c_str());
 	}
 }
+
