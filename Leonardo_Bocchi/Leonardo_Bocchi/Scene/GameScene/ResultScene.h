@@ -3,6 +3,9 @@
 class ResultScene :
 	public SceneBase
 {
+private:
+	int display_clear_count = 0;	// クリア回数を表示する変数
+	int clear_timer = 0;			// クリア回数の表示タイマー
 public:
 	ResultScene();
 	~ResultScene();
