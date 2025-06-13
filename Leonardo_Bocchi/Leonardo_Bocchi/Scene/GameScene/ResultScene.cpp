@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include "../../Utility/InputControl.h"
 #include "../../Utility/ResourceManager.h"
+#include "../RankingManager.h"
 #include "../../common.h"
 
 ResultScene::ResultScene()
@@ -36,10 +37,36 @@ eSceneType ResultScene::Update()
 
 	if (input->GetButtonDown(XINPUT_BUTTON_A))
 	{
-		// Aボタンが押されたらゲームメインシーンに移行
-		//return eSceneType::TITLE;
-		return eSceneType::NAME_INPUT;
-		clear_count = 0;
+		// ランキングと比較
+		const auto& rankings = RankingManager::GetInstance()->GetRankings();
+		bool is_high_score = false;
+
+		if (rankings.size() < 10)
+		{
+			is_high_score = true; // ランキングが10件未満なら必ずハイスコア
+		}
+		else
+		{
+			for (const auto& r : rankings)
+			{
+				if (clear_count >= r.score)
+				{
+					is_high_score = true;
+					break;
+				}
+			}
+		}
+
+		// スコアがランキングに入る場合は名前入力へ
+		if (is_high_score)
+		{
+			return eSceneType::NAME_INPUT;
+		}
+		else
+		{
+			clear_count = 0;
+			return eSceneType::TITLE;
+		}
 	}
 	return __super::Update();
 }
@@ -47,22 +74,38 @@ eSceneType ResultScene::Update()
 void ResultScene::Draw() const
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
-
-	const char* result = "RESULT";
-	int result_width = GetDrawStringWidthToHandle(result, -1, rm->GetFontHandle("Tepid Terminal", 64));
-	DrawStringToHandle((SCREEN_WIDTH - result_width) / 2, 100, result, GetColor(255, 215, 0), rm->GetFontHandle("Tepid Terminal", 64));
-
-
-	const char* clear_text = "Clear Count : %d";
-	int clear_width = GetDrawStringWidthToHandle(clear_text, -1, rm->GetFontHandle("Tepid Terminal", 48));
-	DrawFormatStringToHandle(((SCREEN_WIDTH - result_width) / 2) - 100, (SCREEN_HEIGHT / 2) + 10, GetColor(255, 255, 128), rm->GetFontHandle("Tepid Terminal", 48), clear_text, display_clear_count);
+	int title_font = rm->GetFontHandle("Tepid Terminal", 64);
+	int score_font = rm->GetFontHandle("Tepid Terminal", 48);
+	int hint_font = rm->GetFontHandle("Tepid Terminal", 24);
 
 
-	const char* hint = "Press A to continue";
-	int hint_width = GetDrawStringWidthToHandle(hint, -1, rm->GetFontHandle("Tepid Terminal", 24));
-	DrawStringToHandle((SCREEN_WIDTH - hint_width) / 2, SCREEN_HEIGHT - 50, hint, GetColor(180, 180, 180), rm->GetFontHandle("Tepid Terminal", 24));
+	std::string result_text = "== RESULT ==";
+	int result_width = GetDrawStringWidthToHandle(result_text.c_str(), result_text.size(), title_font);
+	int result_x = (SCREEN_WIDTH - result_width) / 2;
+	DrawStringToHandle(result_x + 4, 104, result_text.c_str(), GetColor(0, 0, 0), title_font); // 影
+	DrawStringToHandle(result_x, 100, result_text.c_str(), GetColor(255, 255, 255), title_font);  // 金色
 
+
+	std::string clear_text = "Clear Count : " + std::to_string(display_clear_count);
+	int clear_width = GetDrawStringWidthToHandle(clear_text.c_str(), clear_text.size(), score_font);
+	int clear_x = (SCREEN_WIDTH - clear_width) / 2;
+
+
+	DrawBox(clear_x - 20, SCREEN_HEIGHT / 2 - 10, clear_x + clear_width + 20, SCREEN_HEIGHT / 2 + 60, GetColor(100, 100, 100), TRUE);
+	DrawBox(clear_x - 20, SCREEN_HEIGHT / 2 - 10, clear_x + clear_width + 20, SCREEN_HEIGHT / 2 + 60, GetColor(255, 255, 128), FALSE);
+
+	DrawStringToHandle(clear_x + 2, SCREEN_HEIGHT / 2 + 2, clear_text.c_str(), GetColor(0, 0, 0), score_font); // 影
+	DrawStringToHandle(clear_x, SCREEN_HEIGHT / 2, clear_text.c_str(), GetColor(255, 255, 128), score_font);  // 本体
+
+
+	std::string hint = "Press A to continue";
+	int hint_width = GetDrawStringWidthToHandle(hint.c_str(), hint.size(), hint_font);
+	int hint_x = (SCREEN_WIDTH - hint_width) / 2;
+
+	DrawStringToHandle(hint_x + 2, SCREEN_HEIGHT - 48, hint.c_str(), GetColor(0, 0, 0), hint_font);   // 影
+	DrawStringToHandle(hint_x, SCREEN_HEIGHT - 50, hint.c_str(), GetColor(180, 180, 180), hint_font); // 本体
 }
+
 
 void ResultScene::Finalize()
 {

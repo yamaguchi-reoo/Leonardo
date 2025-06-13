@@ -10,7 +10,7 @@ void NameInputScene::Initialize()
 	// キー配列作成
 	for (char c = 'A'; c <= 'Z'; ++c) keys.push_back(std::string(1, c));
 	for (char c = '0'; c <= '9'; ++c) keys.push_back(std::string(1, c));
-	keys.push_back("Spa");
+	keys.push_back("Sp");
 	keys.push_back("Del");
 	keys.push_back("OK");
 
@@ -72,22 +72,22 @@ void NameInputScene::HandleInput()
 	if (input->GetButtonDown(XINPUT_BUTTON_DPAD_RIGHT)) 
 	{
 		cursor_x = (cursor_x + 1) % grid_width; // 右に移動
-		input_cooldown = 10; // クールダウンタイマーを設定
+		input_cooldown = 5; // クールダウンタイマーを設定
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_LEFT))
 	{
 		cursor_x = (cursor_x - 1 + grid_width) % grid_width; // 左に移動
-		input_cooldown = 10; // クールダウンタイマーを設定
+		input_cooldown = 5; // クールダウンタイマーを設定
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
 	{
 		cursor_y = (cursor_y + 1) % grid_height;
-		input_cooldown = 10;
+		input_cooldown = 5;
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
 	{
 		cursor_y = (cursor_y - 1 + grid_height) % grid_height;
-		input_cooldown = 10;
+		input_cooldown = 5;
 	}
 	
 
@@ -96,7 +96,7 @@ void NameInputScene::HandleInput()
 	{
 		const std::string& key = keys[index];
 
-		if (key == "Delete")
+		if (key == "Del")
 		{
 			if (!player_name.empty())
 			{
@@ -108,10 +108,11 @@ void NameInputScene::HandleInput()
 			if (!player_name.empty())
 			{
 				RankingManager::GetInstance()->AddEntry(player_name, clear_count);
+				RankingManager::GetInstance()->Save(); // ランキングを保存
 				is_enter_name = true; // 名前入力完了
 			}
 		}
-		else if (key == "Space")
+		else if (key == "Sp")
 		{
 			if (player_name.size() < max_name_length)
 			{

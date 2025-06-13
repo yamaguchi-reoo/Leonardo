@@ -71,8 +71,8 @@ eSceneType TitleScene::Update()
             // 仮にヘルプもタイトルへ戻す
             return eSceneType::TITLE;
         case MENU_RANKING:
-            // 仮にランキングもタイトルへ戻す
-            return eSceneType::TITLE;
+			// ランキングシーンへ移行
+			next_scene = eSceneType::RANKING;
 		case MENU_CREDITS: 
 			// 仮にクレジットもタイトルへ戻す
 			return eSceneType::TITLE;
@@ -131,7 +131,7 @@ void TitleScene::Draw() const
         DrawStringToHandle((SCREEN_WIDTH - width) / 2, y, text, color, menu_font);
     }
 
-    const char* hint = "UP/DOWN: SELECT  A: DECISION";
+    const char* hint = "[UP/DOWN]: SELECT  [A]: DECISION";
     int hint_w = GetDrawStringWidthToHandle(hint, -1, small_font);
     DrawStringToHandle((SCREEN_WIDTH - hint_w) / 2, SCREEN_HEIGHT - 50, hint, GetColor(180, 180, 180), small_font);
 }
