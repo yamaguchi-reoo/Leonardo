@@ -70,12 +70,14 @@ eSceneType TitleScene::Update()
         case MENU_HELP:
             // 仮にヘルプもタイトルへ戻す
             return eSceneType::TITLE;
+            break;
         case MENU_RANKING:
 			// ランキングシーンへ移行
 			next_scene = eSceneType::RANKING;
 		case MENU_CREDITS: 
 			// 仮にクレジットもタイトルへ戻す
 			return eSceneType::TITLE;
+            break;
         case MENU_END:
             DxLib_End(); // DxLib を終了してアプリ終了
             exit(0);
@@ -172,11 +174,8 @@ void TitleScene::LoadResource()
 
 void TitleScene::PlaySoundBgm(int _handle, int volume)
 {
-    int handle = _handle;
     ChangeVolumeSoundMem(volume, _handle);
-
     PlaySoundMem(_handle, DX_PLAYTYPE_LOOP); // BGMをループ再生
-
 }
 
 void TitleScene::PlaySoundSe(int _handle, int volume)

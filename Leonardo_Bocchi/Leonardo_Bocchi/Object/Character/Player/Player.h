@@ -119,5 +119,7 @@ public:
 
     // テレポートエフェクトの描画
     void DrawTeleport(Vector2D offset);
+
+	int GetHP() const { return hp; }
 };
 

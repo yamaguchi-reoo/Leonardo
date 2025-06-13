@@ -27,7 +27,7 @@ void Trap::Draw(Vector2D offset, double rate)
 {
 	offset.y += 12.5f; 
 	__super::Draw(offset, 0.45);
-	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(0, 0, 255), FALSE);
+	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(0, 0, 255), FALSE);
 
 	if (is_active)
 	{

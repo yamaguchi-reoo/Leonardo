@@ -41,7 +41,7 @@ void GameObject::Draw(Vector2D offset, double rate)
 	}
 
 	//•`‰æ”ÍˆÍ‚Ì‰ÂŽ‹‰»
-	DrawBoxAA(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 0, 0), FALSE);
+	//DrawBoxAA(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 0, 0), FALSE);
 }
 
 void GameObject::Finalize()

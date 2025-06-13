@@ -93,7 +93,12 @@ void Player::Update()
 void Player::Draw(Vector2D offset, double rate) 
 {
 	//__super::Draw(offset, 1.5);
-	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
+	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
+
+	if (is_teleport)
+	{
+		DrawTeleport(offset);
+	}
 
 	// –³“GŠÔ’†‚Í“_–Å‚³‚¹‚é
 	bool is_draw = true;
@@ -108,18 +113,12 @@ void Player::Draw(Vector2D offset, double rate)
 		offset.y -= 4.5f;
 		__super::Draw(offset, 2.0);
 	}
-	DrawFormatString(10, 120, GetColor(255, 255, 255), "HP ~ %d", hp);
 
 	InvincibleEffect(offset);
 
 	for (const auto& particle : heal_particles)
 	{
 		DrawHealParticle(particle, offset);
-	}
-
-	if (is_teleport)
-	{
-		DrawTeleport(offset);
 	}
 
 #ifdef _DEBUG
@@ -236,20 +235,6 @@ void Player::HandleInput()
 		action_state = next_state;
 		animation_frame = 0;
 	}
-
-
-	//// WALK’†‚Ì‘«‰¹SEˆ—
-	//if (action_state == ActionState::WALK && on_ground) {
-	//	walk_se_timer++;
-	//	if (walk_se_timer >= walk_se_interval) {
-	//		sound_manager.PlaySoundSE(SoundType::WALK, 50, true);  // 1‰ñÄ¶
-	//		walk_se_timer = 0;
-	//	}
-	//}
-	//else {
-	//	walk_se_timer = walk_se_interval; // Ÿ‚ÉWALK‚É‚È‚Á‚½‚ç‚·‚®–Â‚é‚æ‚¤‚É
-	//}
-
 }
 
 void Player::AnimationControl()

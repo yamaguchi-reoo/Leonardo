@@ -73,22 +73,22 @@ void Enemy::Draw(Vector2D offset, double rate)
 	offset.y -= 4.5f;
 	__super::Draw(offset, 2.0);
 
-	switch (action_state)
-	{
-	case ActionState::IDLE:
-		DrawFormatString(80, 140, GetColor(255, 255, 255), "State: IDLE");
-		break;
-	case ActionState::WALK:
-		DrawFormatString(80, 140, GetColor(255, 255, 255), "State: WALK");
-		break;
-	case ActionState::JUMP:
-		DrawFormatString(80, 140, GetColor(255, 255, 255), "State: JUMP");
-		break;
-	case ActionState::DAMAGE:
-		DrawFormatString(80, 140, GetColor(255, 255, 255), "State: DAMAGE");
-		break;
-	}
-	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(0, 255, 0), FALSE);
+	//switch (action_state)
+	//{
+	//case ActionState::IDLE:
+	//	DrawFormatString(80, 140, GetColor(255, 255, 255), "State: IDLE");
+	//	break;
+	//case ActionState::WALK:
+	//	DrawFormatString(80, 140, GetColor(255, 255, 255), "State: WALK");
+	//	break;
+	//case ActionState::JUMP:
+	//	DrawFormatString(80, 140, GetColor(255, 255, 255), "State: JUMP");
+	//	break;
+	//case ActionState::DAMAGE:
+	//	DrawFormatString(80, 140, GetColor(255, 255, 255), "State: DAMAGE");
+	//	break;
+	//}
+	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(0, 255, 0), FALSE);
 	//DrawFormatString(offset.x, offset.y, GetColor(255, 0, 0), "Enemy");
 	//DrawFormatString(10, 60, GetColor(255, 0, 0), "%f",location.x);
 }

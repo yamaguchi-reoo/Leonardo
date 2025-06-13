@@ -24,9 +24,7 @@ void GameMainScene::Initialize()
 	camera_location = Vector2D(0.0f, 0.0f); //カメラの初期位置を設定
 	//back_ground_image = LoadGraph("Resource/Images/back_ground.png"); // 背景画像を読み込む
 	back_ground_image = LoadGraph("Resource/Images/BackGround/Base_Color.png"); // 背景画像を読み込む
-	//back_ground_img[0] = LoadGraph("Resource/Images/BackGround/city5/3.png");
-	//back_ground_img[1] = LoadGraph("Resource/Images/BackGround/city5/4.png");
-	//back_ground_img[2] = LoadGraph("Resource/Images/BackGround/city5/5.png");
+
 
 	LoadGameMainResource();
 	//PlayGameMainSound();   // シーン開始時に BGM をループ再生
@@ -100,16 +98,10 @@ void GameMainScene::Draw() const
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 
-	DrawGraph(0, 0, back_ground_image, TRUE); // 背景画像を読み込む
+	//DrawGraph(0, 0, back_ground_image, TRUE); // 背景画像を読み込む
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(10, 10, 30), TRUE); // 背景色を描画
 
-	/*for (int i = 0; i < 2; ++i) {
-		DrawGraph(0, 0, back_ground_img[i], TRUE);
-	}*/
 	__super::Draw();
-
-	DrawFormatString(10, 70, GetColor(255, 255, 255), "LOOP : %d\n", clear_count);
-
-
 
 	InputControl* input = InputControl::GetInstance();
 	if (input->GetKey(KEY_INPUT_0)) {
@@ -122,6 +114,7 @@ void GameMainScene::Draw() const
 		}
 	}
 
+	DrawUI();
 
 	// ゲームオーバー中なら文字を描画
 	if (is_game_over)
@@ -405,6 +398,9 @@ void GameMainScene::LoadGameMainResource()
 	rm->LoadFont("Resource/Font/TepidTerminal.ttf", "Tepid Terminal");
 	font_48 = rm->GetFontHandle("Tepid Terminal", 48);
 	font_24 = rm->GetFontHandle("Tepid Terminal", 24);
+
+	//UI画像読込
+	heart_img = LoadGraph("Resource/Images/UI/Hp.png"); // ハート画像を読み込む
 }
 
 void GameMainScene::PlayGameMainSound()
@@ -423,5 +419,42 @@ void GameMainScene::StopGameMainSound()
 	if (!sounds_data.empty()) {
 		StopSoundMem(sounds_data[0]);
 	}
+}
+
+void GameMainScene::DrawUI() const
+{
+	if (player) 
+	{
+		// ハート描画
+		for (int i = 0; i < player->GetHp(); ++i)
+		{
+			DrawGraph(20 + i * 50, 20, heart_img, TRUE);
+		}
+
+	}
+
+	// LOOP テキスト生成
+	std::string loop_text = "LOOP : " + std::to_string(clear_count);
+	int text_width = GetDrawStringWidthToHandle(loop_text.c_str(), -1, font_48);
+	int text_height = GetFontSizeToHandle(font_48); // 高さも取得
+
+	// 表示位置（右上）
+	int padding = 10;
+	int box_x = SCREEN_WIDTH - text_width - padding * 2 - 50;
+	int box_y = 20;
+	int box_w = text_width + padding * 2;
+	int box_h = text_height + padding * 2;
+
+	// 背景描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	DrawBox(box_x, box_y, box_x + box_w, box_y + box_h, GetColor(30, 30, 60), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	// 枠線（白）
+	DrawBox(box_x, box_y, box_x + box_w, box_y + box_h, GetColor(255, 255, 255), FALSE);
+
+	// テキスト描画
+	DrawStringToHandle(box_x + padding, box_y + padding, loop_text.c_str(), GetColor(255, 255, 455), font_48);
+
 }
 

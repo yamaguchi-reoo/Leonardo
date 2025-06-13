@@ -32,7 +32,7 @@ void GoalPoint::Update()
 
 void GoalPoint::Draw(Vector2D offset, double rate)
 {
-	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
+	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
 
 	Vector2D center = offset + box_size / 2;
 	float radius_x = 30.0f + 6.0f * sinf(effect_timer * 0.1f);
@@ -78,8 +78,19 @@ void GoalPoint::Draw(Vector2D offset, double rate)
     {
         // 非アクティブ時の楕円 (同じ大きさ)
         SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
-        DrawEllipseAA(center.x, center.y, radius_x, radius_y, 64, GetColor(200, 200, 200), TRUE);
+        DrawEllipseAA(center.x, center.y, radius_x, radius_y, 64, GetColor(100, 200, 255), TRUE);
         SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+		// 外周の回転楕円リング
+		for (int i = 0; i < 3; ++i)
+		{
+			float ring_rx = radius_x + i * 2.0f;
+			float ring_ry = radius_y + i * 2.0f;
+			DrawEllipseAA(center.x, center.y, ring_rx, ring_ry, 64, GetColor(0, 255, 255), false, 2);
+		}
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
     }
 	__super::Draw(offset, rate);
 }

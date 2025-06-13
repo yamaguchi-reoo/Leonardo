@@ -20,7 +20,7 @@ private:
 	std::vector<int> sounds_data;
 
 	int back_ground_image; //”wŒi‰æ‘œ
-	int back_ground_img[5];
+	int heart_img;
 
 	float clone_spawn_timer;
 	bool is_create;
@@ -74,6 +74,8 @@ public:
 	void PlayGameMainSound();
 
 	void StopGameMainSound();
+
+	void DrawUI() const;
 
 };
 
