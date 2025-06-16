@@ -67,7 +67,7 @@ eSceneType SceneBase::Update()
 	return GetNowSceneType();
 }
 
-void SceneBase::Draw() const
+void SceneBase::Draw()
 {
 	for (GameObject* obj : objects)
 	{

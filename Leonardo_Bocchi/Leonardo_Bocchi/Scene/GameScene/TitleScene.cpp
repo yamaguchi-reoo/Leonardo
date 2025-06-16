@@ -98,7 +98,7 @@ eSceneType TitleScene::Update()
 	return __super::Update();
 }
 
-void TitleScene::Draw() const
+void TitleScene::Draw()
 {
     DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(10, 10, 30), TRUE);
 

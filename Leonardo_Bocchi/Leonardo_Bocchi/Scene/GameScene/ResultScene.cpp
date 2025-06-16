@@ -71,7 +71,7 @@ eSceneType ResultScene::Update()
 	return __super::Update();
 }
 
-void ResultScene::Draw() const
+void ResultScene::Draw()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 	int title_font = rm->GetFontHandle("Tepid Terminal", 64);

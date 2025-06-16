@@ -94,7 +94,7 @@ eSceneType GameMainScene::Update()
 	return __super::Update();
 }
 
-void GameMainScene::Draw() const
+void GameMainScene::Draw()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 

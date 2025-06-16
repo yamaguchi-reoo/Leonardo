@@ -33,16 +33,7 @@ void ResourceManager::DeleteInstance()
 	}
 }
 
-/// <summary>
 /// 画像を取得する
-/// </summary>
-/// <param name="file_name">ファイルパス</param>
-/// <param name="all_num">画像の総数</param>
-/// <param name="num_x">横の総数</param>
-/// <param name="num_y">縦の総数</param>
-/// <param name="size_x">横のサイズ（ｐｘ）</param>
-/// <param name="size_y">縦のサイズ（ｐｘ）</param>
-/// <returns>読み込んだ画像ハンドルのstd::vector配列</returns>
 const std::vector<int>& ResourceManager::GetImages(std::string file_name, int all_num, int num_x, int num_y, int size_x, int size_y)
 {
 	//コンテナ内に指定ファイルがなければ、生成する

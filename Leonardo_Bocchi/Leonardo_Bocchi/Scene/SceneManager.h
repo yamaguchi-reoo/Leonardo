@@ -16,7 +16,7 @@ public:
     void Finalize();    //I—¹ˆ—
 
 private:
-    void Draw() const;  //•`‰æˆ—
+    void Draw();  //•`‰æˆ—
 
     //ƒV[ƒ“Ø‘Öˆ—
     void ChangeScene(eSceneType type);

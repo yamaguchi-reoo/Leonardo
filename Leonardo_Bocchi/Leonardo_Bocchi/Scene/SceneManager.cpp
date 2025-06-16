@@ -44,7 +44,7 @@ void SceneManager::Finalize()
 	}
 }
 
-void SceneManager::Draw() const
+void SceneManager::Draw()
 {
 }
 

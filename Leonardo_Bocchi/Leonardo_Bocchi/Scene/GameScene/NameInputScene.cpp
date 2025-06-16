@@ -41,7 +41,7 @@ eSceneType NameInputScene::Update()
 	return __super::Update();
 }
 
-void NameInputScene::Draw() const
+void NameInputScene::Draw()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 	// 名前表示

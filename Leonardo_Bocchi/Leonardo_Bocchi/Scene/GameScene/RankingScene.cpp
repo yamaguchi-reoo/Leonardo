@@ -34,7 +34,7 @@ eSceneType RankingScene::Update()
 	return __super::Update();
 }
 
-void RankingScene::Draw() const
+void RankingScene::Draw()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 	int handle = rm->GetFontHandle("Tepid Terminal", 64);
