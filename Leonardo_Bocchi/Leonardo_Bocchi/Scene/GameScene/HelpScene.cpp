@@ -166,7 +166,7 @@ void HelpScene::DrawObject()
 
 			// 背景Boxサイズ
 			int bg_w = w + padding * 2 + 70;
-			int bg_h = h + padding * 2 + 70; // ← ちょっと下にスペースを増やす（床用）
+			int bg_h = h + padding * 2 + 70;
 
 			// Box左上・右下
 			int left = x - bg_w / 2;
