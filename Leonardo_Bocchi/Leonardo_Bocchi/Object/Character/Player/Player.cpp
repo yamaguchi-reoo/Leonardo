@@ -181,14 +181,14 @@ void Player::HandleInput()
 		if (input->GetButton(XINPUT_BUTTON_DPAD_LEFT))
 		{
 			move = MoveDirection::LEFT;
-			velocity.x -= 0.5f;
+			velocity.x -= 0.35f;
 			flip_flg = true;
 			if (on_ground) next_state = ActionState::WALK;
 		}
 		else if (input->GetButton(XINPUT_BUTTON_DPAD_RIGHT))
 		{
 			move = MoveDirection::RIGHT;
-			velocity.x += 0.5f;
+			velocity.x += 0.35f;
 			flip_flg = false;
 			if (on_ground) next_state = ActionState::WALK;
 		}
@@ -221,7 +221,7 @@ void Player::HandleInput()
 			velocity.y = Max(velocity.y, -9.0f); // 上昇制限
 		}
 
-		// 着地チェック → Updateの後に on_ground = true にされる前提
+		// 着地チェック Updateの後に on_ground = true にされる前提
 		if (on_ground && action_state == ActionState::JUMP)
 		{
 			next_state = (Abs(velocity.x) > 0.1f) ? ActionState::WALK : ActionState::IDLE;

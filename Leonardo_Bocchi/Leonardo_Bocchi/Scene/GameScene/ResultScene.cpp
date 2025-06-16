@@ -98,7 +98,7 @@ void ResultScene::Draw() const
 	DrawStringToHandle(clear_x, SCREEN_HEIGHT / 2, clear_text.c_str(), GetColor(255, 255, 128), score_font);  // –{‘Ì
 
 
-	std::string hint = "Press A to continue";
+	std::string hint = "Press [A] to";
 	int hint_width = GetDrawStringWidthToHandle(hint.c_str(), hint.size(), hint_font);
 	int hint_x = (SCREEN_WIDTH - hint_width) / 2;
 
