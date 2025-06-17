@@ -27,17 +27,7 @@ private:
 	int current_page; // 現在のページ番号
 	int total_pages; // 総ページ数
 
-	std::vector < std::vector<std::string>> help_texts; // ページごとのヘルプテキスト
-
-	enum class PlayerAnimationType { IDLE, WALK, JUMP };
-
-	int frame_width = 64;
-	int frame_height = 64;
-
-	std::map<PlayerAnimationType, int> animation_frame;
-	std::map<PlayerAnimationType, int> animation_timer;
-
-	std::map<PlayerAnimationType, std::vector<int>> animation_data; // {開始フレーム, フレーム数}
+; 
 public:
 	HelpScene();
 	~HelpScene();
@@ -55,5 +45,9 @@ public:
 	void DrawTeleport(int x, int y);
 
 	void DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness);
+
+	void DrawAButton(int x, int y);
+
+	void DrawStick(int x, int y);
 };
 

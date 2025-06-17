@@ -177,19 +177,27 @@ void Player::HandleInput()
 	ActionState next_state = action_state;
 
 	if (!is_goal) {
-		// 左右移動入力
-		if (input->GetButton(XINPUT_BUTTON_DPAD_LEFT))
+		// 左スティックの傾き取得（値は -1.0f ～ 1.0f）
+		float stick_x = input->LeftStickTilt(STICK_X);
+		const float DEAD_ZONE = 0.2f;
+
+		bool is_moving = false;
+
+		// スティック or 十字キー 左右入力
+		if (stick_x < -DEAD_ZONE || input->GetButton(XINPUT_BUTTON_DPAD_LEFT))
 		{
 			move = MoveDirection::LEFT;
 			velocity.x -= 0.35f;
 			flip_flg = true;
+			is_moving = true;
 			if (on_ground) next_state = ActionState::WALK;
 		}
-		else if (input->GetButton(XINPUT_BUTTON_DPAD_RIGHT))
+		else if (stick_x > DEAD_ZONE || input->GetButton(XINPUT_BUTTON_DPAD_RIGHT))
 		{
 			move = MoveDirection::RIGHT;
 			velocity.x += 0.35f;
 			flip_flg = false;
+			is_moving = true;
 			if (on_ground) next_state = ActionState::WALK;
 		}
 		else
@@ -199,35 +207,33 @@ void Player::HandleInput()
 			if (on_ground) next_state = ActionState::IDLE;
 		}
 
-		// ジャンプ開始（ジャンプキー押下時 & 地面にいるとき）
+		// ジャンプ開始
 		if (input->GetButtonDown(XINPUT_BUTTON_A) && on_ground)
 		{
-			velocity.y = -4.0f;  // 初速
+			velocity.y = -4.0f;
 			jump_time = 0;
-			on_ground = false;  // ジャンプ直後は空中扱い
+			on_ground = false;
 			next_state = ActionState::JUMP;
-
-			// ジャンプSEを鳴らす
-			sound_manager.PlaySoundSE(SoundType::JUMP, 25, true);
+			sound_manager.PlaySoundSE(SoundType::JUMP, 50, true);
 		}
 
-		// 長押しでジャンプ延長
+		// ジャンプ延長
 		if (input->GetButton(XINPUT_BUTTON_A) &&
 			action_state == ActionState::JUMP &&
 			jump_time < 20)
 		{
 			jump_time++;
-			velocity.y -= 0.25f;  // 上昇を追加
-			velocity.y = Max(velocity.y, -9.0f); // 上昇制限
+			velocity.y -= 0.25f;
+			velocity.y = Max(velocity.y, -9.0f);
 		}
 
-		// 着地チェック Updateの後に on_ground = true にされる前提
+		// 着地後の状態切り替え
 		if (on_ground && action_state == ActionState::JUMP)
 		{
 			next_state = (Abs(velocity.x) > 0.1f) ? ActionState::WALK : ActionState::IDLE;
 		}
 	}
-	// ダメージ中は状態遷移しない
+
 	if (action_state != ActionState::DAMAGE)
 		action_state = next_state;
 
@@ -236,6 +242,7 @@ void Player::HandleInput()
 		animation_frame = 0;
 	}
 }
+
 
 void Player::AnimationControl()
 {
@@ -259,7 +266,7 @@ void Player::AnimationControl()
 		if (frame_index != prev_frame_index) {
 			for (int footstep_frame : footstep_frames) {
 				if (frame_index == footstep_frame) {
-					sound_manager.PlaySoundSE(SoundType::WALK, 50, true);
+					sound_manager.PlaySoundSE(SoundType::WALK, 80, true);
 					break;
 				}
 			}
@@ -285,7 +292,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	// 回復アイテムヒット時
 	if (hit_object->GetObjectType() == HEAL)
 	{
-		sound_manager.PlaySoundSE(SoundType::HEAL, 50, true); // 回復音
+		sound_manager.PlaySoundSE(SoundType::HEAL, 80, true); // 回復音
 		hp += 1;
 		for (int i = 0; i < 10; ++i)
 		{
@@ -296,7 +303,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	// 無敵アイテムヒット時
 	if (hit_object->GetObjectType() == INVINCIBLE)
 	{
-		sound_manager.PlaySoundSE(SoundType::INVINCIBLE, 50, true); //バリア音
+		sound_manager.PlaySoundSE(SoundType::INVINCIBLE, 80, true); //バリア音
 		if (!is_invincible)
 		{
 			is_invincible = true;
@@ -324,7 +331,7 @@ void Player::SaveMoveHistory()
 
 void Player::ApplyDamage()
 {
-	sound_manager.PlaySoundSE(SoundType::DAMAGE, 70, true); // ダメージ音
+	sound_manager.PlaySoundSE(SoundType::DAMAGE, 90, true); // ダメージ音
 	damage_flg = true;
 	hp--;
 
@@ -444,7 +451,7 @@ void Player::PlayerTeleport()
 		Vector2D spawn_pos = location + Vector2D(cosf(angle), sinf(angle)) * radius;
 		teleport_particles.emplace_back(spawn_pos);
 	}
-	sound_manager.PlaySoundSE(SoundType::TELEPORT, 50, true);
+	sound_manager.PlaySoundSE(SoundType::TELEPORT, 80, true);
 }
 
 void Player::UpdateTeleport()

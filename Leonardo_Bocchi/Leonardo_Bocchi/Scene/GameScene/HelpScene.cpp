@@ -4,6 +4,7 @@
 #include "../../Utility/ResourceManager.h"
 #include "../../common.h"
 
+
 HelpScene::HelpScene() : font_small(-1), font_large(-1), current_page(0), total_pages(2)
 {
 }
@@ -42,6 +43,7 @@ eSceneType HelpScene::Update()
 	{
 		return eSceneType::TITLE; // 戻るボタンでタイトルへ
 	}
+
 	return __super::Update();
 }
 
@@ -92,6 +94,41 @@ eSceneType HelpScene::GetNowSceneType() const
 
 void HelpScene::DrawPlayerControls()
 {
+	ResourceManager* rm = ResourceManager::GetInstance();
+	int font = rm->GetFontHandle("Tepid Terminal", 28);
+
+	int icon_y = 250;
+	int text_offset_x = 100;
+
+	// Aボタン + 説明
+	DrawAButton(SCREEN_WIDTH / 2 - text_offset_x, icon_y);
+	DrawStringToHandle(SCREEN_WIDTH / 2, icon_y - 14, "Jump", GetColor(255, 255, 255), font);
+
+	icon_y += 100;
+
+	// スティック + 説明
+	DrawStick(SCREEN_WIDTH / 2 - text_offset_x, icon_y);
+	DrawStringToHandle(SCREEN_WIDTH / 2, icon_y - 14, "Move", GetColor(255, 255, 255), font);
+
+	icon_y += 120; // スティックの下
+
+	int image_y = icon_y;
+	int label_y = image_y + 64 + 4; // 画像の下にテキスト
+	int image_size = 64;
+	int spacing_x = 150;
+
+	int player_x = SCREEN_WIDTH / 2 - spacing_x;
+	int enemy_x = SCREEN_WIDTH / 2 + spacing_x;
+
+	// 画像の読み込み（適宜リソース管理に組み込んでもOK）
+	int player_img = LoadGraph("Resource/Images/Character/Player/Player-idle/player-idle_help.png");
+	int enemy_img = LoadGraph("Resource/Images/Character/Enemy/Enemy-idle/enemy-idle_help.png");
+
+	DrawGraph(player_x - image_size / 2, image_y, player_img, TRUE);
+	DrawGraph(enemy_x - image_size / 2, image_y, enemy_img, TRUE);
+
+	DrawStringToHandle(player_x - 30, label_y, "You", GetColor(255, 255, 255), font);
+	DrawStringToHandle(enemy_x - 35, label_y, "Clone", GetColor(255, 100, 100), font);
 }
 
 void HelpScene::DrawObjectPage()
@@ -108,8 +145,7 @@ void HelpScene::DrawObjectPage()
 
 	int spacing_y = 100;
 
-	// ▼ 中央寄せのための準備
-	int max_item_width = 300; // 仮の最大幅（画像＋テキスト）。必要に応じて微調整。
+	int max_item_width = 300; 
 	int x = (SCREEN_WIDTH - max_item_width) / 2;
 	int y = 200;
 
@@ -127,7 +163,6 @@ void HelpScene::DrawObjectPage()
 		y += spacing_y;
 	}
 }
-
 
 void HelpScene::DrawTeleport(int x, int y)
 {
@@ -192,6 +227,30 @@ void HelpScene::DrawEllipseAA(float cx, float cy, float rx, float ry, int num_se
 		}
 	}
 }
+
+void HelpScene::DrawAButton(int x, int y)
+{
+	int radius = 30;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	DrawCircle(x, y, radius, GetColor(100, 255, 100), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	ResourceManager* rm = ResourceManager::GetInstance();
+	int font = rm->GetFontHandle("Tepid Terminal", 28);
+	DrawStringToHandle(x - 5 , y - 12, "A", GetColor(255, 255, 255), font);
+}
+
+void HelpScene::DrawStick(int x, int y)
+{
+	// スティックベース
+	int base_radius = 35;
+	DrawCircle(x, y, base_radius, GetColor(50, 50, 50), TRUE);  // 台座
+
+	// スティック先端（内側の球体）
+	int tip_radius = 22;
+	DrawCircle(x, y, tip_radius, GetColor(150, 150, 150), TRUE); // 先端
+}
+
 
 
 
