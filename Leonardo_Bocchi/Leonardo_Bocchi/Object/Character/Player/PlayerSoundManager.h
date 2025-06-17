@@ -13,7 +13,8 @@ enum class SoundType
     HEAL,
     INVINCIBLE,
     GOAL,
-    TELEPORT
+    TELEPORT,
+	TRAP,
 };
 
 class PlayerSoundManager

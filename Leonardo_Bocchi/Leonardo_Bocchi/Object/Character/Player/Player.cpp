@@ -114,6 +114,12 @@ void Player::Draw(Vector2D offset, double rate)
 		__super::Draw(offset, 2.0);
 	}
 
+	if (trap_hit_timer > 0.0f)
+	{
+		trap_hit_timer--;
+	}
+
+
 	InvincibleEffect(offset);
 
 	for (const auto& particle : heal_particles)
@@ -315,6 +321,16 @@ void Player::OnHitCollision(GameObject* hit_object)
 	{
 		PlayerToGoal();
 		is_goal = true;
+	}
+
+	if (hit_object->GetObjectType() == TRAP)
+	{
+		if (trap_hit_timer <= 0)
+		{
+			sound_manager.PlaySoundSE(SoundType::TRAP, 80, true);
+			trap_hit_timer = 60.0f;
+		}
+
 	}
 }
 

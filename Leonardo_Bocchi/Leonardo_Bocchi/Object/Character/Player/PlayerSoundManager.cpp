@@ -14,6 +14,7 @@ void PlayerSoundManager::LoadSounds()
 	sound_map[SoundType::HEAL] = rm->GetSound("Resource/Sounds/SE/Player/AS_1272924_キラキラ、回復音_D.mp3");
 	sound_map[SoundType::INVINCIBLE] = rm->GetSound("Resource/Sounds/SE/Player/AS_1090667_スキル使用、バフ、シールド、バリア.mp3");
 	sound_map[SoundType::GOAL] = rm->GetSound("Resource/Sounds/SE/Player/AS_332658_ワープ_エナジー系（シュワーン、シューン.mp3");
+	sound_map[SoundType::TRAP] = rm->GetSound("Resource/Sounds/SE/Player/AS_372280_ビリッ／電気／電流.mp3");
 
 }
 

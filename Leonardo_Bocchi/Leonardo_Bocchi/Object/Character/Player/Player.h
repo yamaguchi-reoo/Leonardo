@@ -59,6 +59,8 @@ private:
 
     int walk_se_timer = 0;
     const int walk_se_interval = 30;
+
+	float trap_hit_timer = 0.0f; // ƒgƒ‰ƒbƒv‚É“–‚½‚Á‚½ŽžŠÔ
 public:
     Player();
     ~Player();
