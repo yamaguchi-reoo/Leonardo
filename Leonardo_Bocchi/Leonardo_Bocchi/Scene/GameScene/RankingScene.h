@@ -5,6 +5,9 @@
 class RankingScene :
 	public SceneBase
 {
+private:
+	std::vector<int> sounds_data;
+	int decision_se;
 public:
 	RankingScene();
 	~RankingScene();
@@ -15,5 +18,7 @@ public:
 	void Finalize() override;		//I—¹ˆ—
 
 	eSceneType GetNowSceneType()const override;
+
+	void PlaySoundSe(int _handle, int volume);
 };
 

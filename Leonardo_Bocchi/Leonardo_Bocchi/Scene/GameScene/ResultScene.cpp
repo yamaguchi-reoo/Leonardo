@@ -5,7 +5,7 @@
 #include "../RankingManager.h"
 #include "../../common.h"
 
-ResultScene::ResultScene()
+ResultScene::ResultScene(): decision_se(-1)
 {
 }
 
@@ -19,6 +19,9 @@ void ResultScene::Initialize()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
 	rm->LoadFont("Resource/Font/TepidTerminal.ttf", "Tepid Terminal");
+
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
+	decision_se = sounds_data[0];
 }
 
 eSceneType ResultScene::Update()
@@ -37,6 +40,7 @@ eSceneType ResultScene::Update()
 
 	if (input->GetButtonDown(XINPUT_BUTTON_A))
 	{
+		PlaySoundSe(decision_se, 70); // 決定音を再生
 		// ランキングと比較
 		const auto& rankings = RankingManager::GetInstance()->GetRankings();
 		bool is_high_score = false;
@@ -114,5 +118,11 @@ void ResultScene::Finalize()
 eSceneType ResultScene::GetNowSceneType() const
 {
 	return eSceneType::RESULT;
+}
+
+void ResultScene::PlaySoundSe(int _handle, int volume)
+{
+	ChangeVolumeSoundMem(volume, _handle);
+	PlaySoundMem(_handle, DX_PLAYTYPE_BACK); // SEは1回のみ再生
 }
 
