@@ -63,3 +63,4 @@ T Clamp(T value, T min, T max)
 	if (value > max) return max;
 	return value;
 }
+

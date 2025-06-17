@@ -4,6 +4,19 @@
 #include <string>
 #include <map>
 
+enum class HelpObjectType {
+	Image,
+	Shapes,
+};
+
+struct HelpInfo
+{
+	std::string image_path; //画像のパス
+	std::string name;		//名前
+	std::string text;		//テキスト
+	HelpObjectType type;	//オブジェクトの種類
+};
+
 class HelpScene :
     public SceneBase
 {
@@ -36,11 +49,11 @@ public:
 
 	eSceneType GetNowSceneType()const override;
 
-private:
-	void ObjectAnimation();
+	void DrawPlayerControls();
+	void DrawObjectPage();
 
-	void LoadResource();
+	void DrawTeleport(int x, int y);
 
-	void DrawObject();
+	void DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness);
 };
 

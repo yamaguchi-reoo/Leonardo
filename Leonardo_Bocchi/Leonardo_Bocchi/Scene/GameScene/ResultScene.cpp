@@ -83,7 +83,7 @@ void ResultScene::Draw()
 	int result_width = GetDrawStringWidthToHandle(result_text.c_str(), result_text.size(), title_font);
 	int result_x = (SCREEN_WIDTH - result_width) / 2;
 	DrawStringToHandle(result_x + 4, 104, result_text.c_str(), GetColor(0, 0, 0), title_font); // âe
-	DrawStringToHandle(result_x, 100, result_text.c_str(), GetColor(255, 255, 255), title_font);  // ã‡êF
+	DrawStringToHandle(result_x, 50, result_text.c_str(), GetColor(255, 255, 255), title_font);  // ã‡êF
 
 
 	std::string clear_text = "Clear Count : " + std::to_string(display_clear_count);

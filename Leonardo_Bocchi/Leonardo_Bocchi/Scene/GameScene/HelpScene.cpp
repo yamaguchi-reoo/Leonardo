@@ -4,7 +4,7 @@
 #include "../../Utility/ResourceManager.h"
 #include "../../common.h"
 
-HelpScene::HelpScene() : font_small(-1), font_large(-1), current_page(0), total_pages(3)
+HelpScene::HelpScene() : font_small(-1), font_large(-1), current_page(0), total_pages(2)
 {
 }
 
@@ -18,7 +18,6 @@ void HelpScene::Initialize()
 	font_small = rm->GetFontHandle("Tepid Terminal", 30);
 	font_large = rm->GetFontHandle("Tepid Terminal", 50);
 
-	LoadResource();
 
 }
 
@@ -43,22 +42,19 @@ eSceneType HelpScene::Update()
 	{
 		return eSceneType::TITLE; // 戻るボタンでタイトルへ
 	}
-
-	// アニメーション処理
-	ObjectAnimation();
-
 	return __super::Update();
 }
 
 void HelpScene::Draw()
 {
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(10, 10, 30), TRUE);
 	ResourceManager* rm = ResourceManager::GetInstance();
 	int title_font = rm->GetFontHandle("Tepid Terminal", 64);
 
 	std::string help_text = "== HELP ==";
 	int result_width = GetDrawStringWidthToHandle(help_text.c_str(), help_text.size(), title_font);
 	int help_x = (SCREEN_WIDTH - result_width) / 2;
-	DrawStringToHandle(help_x, 100, help_text.c_str(), GetColor(255, 255, 255), title_font);
+	DrawStringToHandle(help_x, 50, help_text.c_str(), GetColor(255, 255, 255), title_font);
 
 
 	// 戻るヒント
@@ -77,9 +73,11 @@ void HelpScene::Draw()
 
 	DrawStringToHandle(page_x, SCREEN_HEIGHT - 80, page_info, GetColor(200, 200, 200), page_font);
 
-	DrawObject();
 
-
+	switch (current_page){
+		case 0:DrawPlayerControls();break;
+		case 1:DrawObjectPage(); break;
+	}
 
 }
 
@@ -92,103 +90,108 @@ eSceneType HelpScene::GetNowSceneType() const
 	return eSceneType::HELP;
 }
 
-void HelpScene::ObjectAnimation()
+void HelpScene::DrawPlayerControls()
 {
-	for (auto& pair : animation_data)
-	{
-		PlayerAnimationType type = pair.first;
-		auto& frames = pair.second;
-
-		animation_timer[type]++;
-		if (animation_timer[type] >= 10)
-		{
-			if (!frames.empty())
-			{
-				animation_frame[type] = (animation_frame[type] + 1) % frames.size();
-			}
-			animation_timer[type] = 0;
-		}
-	}
 }
 
-
-void HelpScene::LoadResource()
+void HelpScene::DrawObjectPage()
 {
 	ResourceManager* rm = ResourceManager::GetInstance();
+	int font = rm->GetFontHandle("Tepid Terminal", 24);
 
-	auto idle_imgs = rm->GetImages("Resource/Images/Character/Player/Player-idle/player-idle", 6);
-	auto walk_imgs = rm->GetImages("Resource/Images/Character/Player/Player-run/player-run", 6);
-	auto jump_imgs = rm->GetImages("Resource/Images/Character/Player/Player-jump/player-jump", 2);
-
-	animation_data[PlayerAnimationType::IDLE] = idle_imgs;
-	animation_data[PlayerAnimationType::WALK] = walk_imgs;
-	animation_data[PlayerAnimationType::JUMP] = jump_imgs;
-
-	
-
-	// 初期化
-	for (auto& pair : animation_data) {
-		animation_frame[pair.first] = 0;
-		animation_timer[pair.first] = 0;
-	}
-}
-
-void HelpScene::DrawObject()
-{
-	// 表示位置
-	const int spacing_x = 200;
-
-	std::map<PlayerAnimationType, std::string> label = {
-		{PlayerAnimationType::IDLE, "Idle"},
-		{PlayerAnimationType::WALK, "Run"},
-		{PlayerAnimationType::JUMP, "Jump"},
+	std::vector<HelpInfo> items = {
+		{"Resource/Images/Items/heal.png", "Heal Item", "HP Healing", HelpObjectType::Image},
+		{"Resource/Images/Items/adamas.png", "Barrier Item", "Invincible", HelpObjectType::Image},
+		{"Resource/Images/Gimmick/trap01.png", "Trap", "Damage on touch", HelpObjectType::Image},
+		{"", "Teleport", "Go to next loop", HelpObjectType::Shapes}
 	};
 
-	int i = 0;
-	for (auto& pair : animation_data)
-	{
-		PlayerAnimationType type = pair.first;
-		const auto& frames = pair.second;
-		if (!frames.empty())
-		{
-			int frame_index = animation_frame[type];
-			int handle = frames[frame_index];
-;
-			int x = 435 + spacing_x * i;
-			int y = 300;
+	int spacing_y = 100;
 
-			// 画像の幅・高さを取得
-			int w, h;
-			GetGraphSize(handle, &w, &h);
+	// ▼ 中央寄せのための準備
+	int max_item_width = 300; // 仮の最大幅（画像＋テキスト）。必要に応じて微調整。
+	int x = (SCREEN_WIDTH - max_item_width) / 2;
+	int y = 200;
 
-			float scale = 2.0f;
-			int padding = 20;
-
-			// 背景Boxサイズ
-			int bg_w = w + padding * 2 + 70;
-			int bg_h = h + padding * 2 + 70;
-
-			// Box左上・右下
-			int left = x - bg_w / 2;
-			int top = y - bg_h / 2;
-			int right = x + bg_w / 2;
-			int bottom = y + bg_h / 2;
-
-			//背景ボックス（全体）
-			DrawBox(left, top, right, bottom, GetColor(50, 50, 50), TRUE);
-
-			//床っぽい長方形をBoxの下部に描画
-			int floor_height = 20;
-			DrawBox(left, bottom - 37, right, bottom, GetColor(30, 10, 200), TRUE);
-
-			//キャラ描画
-			DrawRotaGraphF(x, y, scale, 0.0, handle, TRUE, 0);
-
-			//ラベル
-			DrawString(x - 20, bottom + 5, label[type].c_str(), GetColor(255, 255, 255));
+	for (const auto& item : items) {
+		if (item.type == HelpObjectType::Image) {
+			int img = LoadGraph(item.image_path.c_str());
+			DrawGraph(x, y, img, TRUE);
 		}
-		i++;
+		else if (item.type == HelpObjectType::Shapes) {
+			DrawTeleport(x, y);
+		}
+
+		DrawStringToHandle(x + 100, y, item.name.c_str(), GetColor(255, 255, 255), font);
+		DrawStringToHandle(x + 100, y + 30, item.text.c_str(), GetColor(200, 200, 200), font);
+		y += spacing_y;
 	}
 }
+
+
+void HelpScene::DrawTeleport(int x, int y)
+{
+	Vector2D center = { static_cast<float>(x), static_cast<float>(y) };
+	float radius_x = 30.0f;
+	float radius_y = 40.0f;
+
+	// 本体
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+	DrawEllipseAA(center.x + 20, center.y + 20, radius_x, radius_y, 64, GetColor(100, 200, 255), TRUE, 2);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	// 外周リング
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+	for (int i = 0; i < 3; ++i)
+	{
+		float ring_rx = radius_x + i * 2.0f;
+		float ring_ry = radius_y + i * 2.0f;
+		DrawEllipseAA(center.x + 20, center.y + 20, ring_rx, ring_ry, 52, GetColor(0, 255, 255), FALSE, 2);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void HelpScene::DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness)
+{
+	float angle_step = 2.0f * DX_PI_F / num_segments;
+
+	if (fill)
+	{
+		// 内側を塗る場合は多角形として塗る
+		for (int i = 0; i < num_segments; ++i)
+		{
+			float theta1 = angle_step * i;
+			float theta2 = angle_step * (i + 1);
+
+			float x1 = cx + rx * cosf(theta1);
+			float y1 = cy + ry * sinf(theta1);
+
+			float x2 = cx + rx * cosf(theta2);
+			float y2 = cy + ry * sinf(theta2);
+
+			DrawTriangle(cx, cy, x1, y1, x2, y2, color, TRUE);
+		}
+	}
+	else
+	{
+		// 線だけ描く（輪っか）
+		float prev_x = cx + rx * cosf(0);
+		float prev_y = cy + ry * sinf(0);
+
+		for (int i = 1; i <= num_segments; ++i)
+		{
+			float theta = angle_step * i;
+
+			float x = cx + rx * cosf(theta);
+			float y = cy + ry * sinf(theta);
+
+			DrawLine(prev_x, prev_y, x, y, color, line_thickness);
+
+			prev_x = x;
+			prev_y = y;
+		}
+	}
+}
+
 
 
