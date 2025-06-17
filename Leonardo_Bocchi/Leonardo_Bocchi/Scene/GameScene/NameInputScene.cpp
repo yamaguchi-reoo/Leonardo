@@ -24,6 +24,9 @@ void NameInputScene::Initialize()
 
 	ResourceManager* rm = ResourceManager::GetInstance();
 	rm->LoadFont("Resource/Font/TepidTerminal.ttf", "Tepid Terminal");
+
+
+	LoadResource();
 }
 
 
@@ -71,21 +74,25 @@ void NameInputScene::HandleInput()
 
 	if (input->GetButtonDown(XINPUT_BUTTON_DPAD_RIGHT)) 
 	{
+		PlaySoundSe(select_se, 70); // 選択音を再生
 		cursor_x = (cursor_x + 1) % grid_width; // 右に移動
 		input_cooldown = 5; // クールダウンタイマーを設定
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_LEFT))
 	{
+		PlaySoundSe(select_se, 70); // 選択音を再生
 		cursor_x = (cursor_x - 1 + grid_width) % grid_width; // 左に移動
 		input_cooldown = 5; // クールダウンタイマーを設定
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
 	{
+		PlaySoundSe(select_se, 70); // 選択音を再生
 		cursor_y = (cursor_y + 1) % grid_height;
 		input_cooldown = 5;
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
 	{
+		PlaySoundSe(select_se, 70); // 選択音を再生
 		cursor_y = (cursor_y - 1 + grid_height) % grid_height;
 		input_cooldown = 5;
 	}
@@ -98,6 +105,7 @@ void NameInputScene::HandleInput()
 
 		if (key == "Del")
 		{
+			PlaySoundSe(select_se, 70); // 選択音を再生
 			if (!player_name.empty())
 			{
 				player_name.pop_back(); // 最後の文字を削除
@@ -105,6 +113,7 @@ void NameInputScene::HandleInput()
 		}
 		else if (key == "OK")
 		{
+			PlaySoundSe(decision_se, 70); // 決定音を再生
 			if (!player_name.empty())
 			{
 				RankingManager::GetInstance()->AddEntry(player_name, clear_count);
@@ -114,6 +123,7 @@ void NameInputScene::HandleInput()
 		}
 		else if (key == "Sp")
 		{
+			PlaySoundSe(select_se, 70); // 選択音を再生
 			if (player_name.size() < max_name_length)
 			{
 				player_name += " "; // スペースを追加
@@ -123,6 +133,7 @@ void NameInputScene::HandleInput()
 		{
 			if (player_name.size() < max_name_length)
 			{
+				PlaySoundSe(decision_se, 50); // 選択音を再生
 				player_name += key; // キーを追加
 			}
 		}
@@ -159,5 +170,23 @@ void NameInputScene::DrawKeyboard() const
 		DrawBox(pos_x, pos_y, pos_x + key_size, pos_y + key_size, color, TRUE);
 		DrawFormatStringToHandle(pos_x + 10, pos_y + 10, GetColor(0, 0, 0), handle, "%s", keys[i].c_str());
 	}
+}
+
+void NameInputScene::LoadResource()
+{
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	// SE
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1587112_選択・決定音（SFサイバー）1.mp3");
+	select_se = sounds_data[0];
+
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
+	decision_se = sounds_data[0];
+}
+
+void NameInputScene::PlaySoundSe(int _handle, int volume)
+{
+	ChangeVolumeSoundMem(volume, _handle);
+	PlaySoundMem(_handle, DX_PLAYTYPE_BACK); // SEは1回のみ再生
 }
 

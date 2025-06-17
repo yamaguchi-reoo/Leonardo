@@ -19,6 +19,10 @@ private:
 	bool is_enter_name;
 	int input_cooldown; // 入力クールダウンタイマー
 
+	std::vector<int> sounds_data;
+	int select_se;
+	int decision_se;
+
 
 public:
 	void Initialize() override;		//初期化処理
@@ -31,5 +35,8 @@ public:
 private:
 	void HandleInput(); // 入力処理
 	void DrawKeyboard() const; // キーボードの描画
+
+	void LoadResource();
+	void PlaySoundSe(int _handle, int volume);
 };
 
