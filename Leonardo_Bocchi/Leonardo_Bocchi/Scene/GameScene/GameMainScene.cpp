@@ -27,7 +27,7 @@ void GameMainScene::Initialize()
 
 
 	LoadGameMainResource();
-	//PlayGameMainSound();   // シーン開始時に BGM をループ再生
+	PlayGameMainSound();   // シーン開始時に BGM をループ再生
 }
 
 eSceneType GameMainScene::Update()
@@ -408,7 +408,7 @@ void GameMainScene::PlayGameMainSound()
 	if (!sounds_data.empty())
 	{
 		int handle = sounds_data[0];
-		ChangeVolumeSoundMem(70, handle);
+		ChangeVolumeSoundMem(60, handle);
 
 		PlaySoundMem(handle, DX_PLAYTYPE_LOOP); // BGMをループ再生
 	}
