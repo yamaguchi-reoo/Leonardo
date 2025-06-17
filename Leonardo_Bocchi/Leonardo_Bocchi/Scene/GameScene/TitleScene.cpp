@@ -67,6 +67,7 @@ eSceneType TitleScene::Update()
         case MENU_START:
             //return eSceneType::GAME_MAIN;
             next_scene = eSceneType::GAME_MAIN;
+            StopTitleSound(); // タイトルBGMを停止
 			break;
         case MENU_HELP:
 			next_scene = eSceneType::HELP; // ヘルプシーンへ移行
@@ -80,6 +81,7 @@ eSceneType TitleScene::Update()
 			break;
         case MENU_END:
             DxLib_End(); // DxLib を終了してアプリ終了
+            StopTitleSound(); // タイトルBGMを停止
             exit(0);
         }
 
@@ -141,9 +143,6 @@ void TitleScene::Draw()
 
 void TitleScene::Finalize()
 {
-	StopTitleSound(); // タイトルBGMを停止
-    ResourceManager::GetInstance()->UnloadResourcesAll();
-    ResourceManager::DeleteInstance();
 }
 
 eSceneType TitleScene::GetNowSceneType() const
@@ -162,7 +161,10 @@ void TitleScene::LoadResource()
     //BGM
 	sounds_data = rm->GetSound("Resource/Sounds/BGM/AS_129910_躍動感のあるテクノサウンド.mp3");
 	title_bgm = sounds_data[0];
-	PlaySoundBgm(title_bgm, 50); // タイトルBGMを再生
+    if (CheckSoundMem(title_bgm) != 1)  // 1は再生中の意味
+    {
+        PlaySoundBgm(title_bgm, 50);
+    }
 
 	// SE
 	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1587112_選択・決定音（SFサイバー）1.mp3");

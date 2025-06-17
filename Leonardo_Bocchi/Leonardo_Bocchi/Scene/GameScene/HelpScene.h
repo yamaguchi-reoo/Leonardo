@@ -27,6 +27,9 @@ private:
 	int current_page; // 現在のページ番号
 	int total_pages; // 総ページ数
 
+	std::vector<int> sounds_data;
+	int select_se;
+	int decision_se;
 ; 
 public:
 	HelpScene();
@@ -39,15 +42,21 @@ public:
 
 	eSceneType GetNowSceneType()const override;
 
+	// ヘルプの描画関数
 	void DrawPlayerControls();
 	void DrawObjectPage();
-
 	void DrawTeleport(int x, int y);
 
+	// 楕円を描画する関数
 	void DrawEllipseAA(float cx, float cy, float rx, float ry, int num_segments, int color, bool fill, int line_thickness);
 
+	// ヘルプオブジェクトの描画
 	void DrawAButton(int x, int y);
-
 	void DrawStick(int x, int y);
+
+	//リソースの読み込み
+	void LoadResource();
+	//効果音の再生
+	void PlaySoundSe(int _handle, int volume);
 };
 

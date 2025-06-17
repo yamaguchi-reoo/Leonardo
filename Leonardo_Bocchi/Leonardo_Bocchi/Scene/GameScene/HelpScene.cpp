@@ -5,7 +5,7 @@
 #include "../../common.h"
 
 
-HelpScene::HelpScene() : font_small(-1), font_large(-1), current_page(0), total_pages(2)
+HelpScene::HelpScene() : font_small(-1), font_large(-1), current_page(0), total_pages(2), select_se(-1), decision_se(-1)
 {
 }
 
@@ -19,6 +19,7 @@ void HelpScene::Initialize()
 	font_small = rm->GetFontHandle("Tepid Terminal", 30);
 	font_large = rm->GetFontHandle("Tepid Terminal", 50);
 
+	LoadResource();
 
 }
 
@@ -29,11 +30,13 @@ eSceneType HelpScene::Update()
 	// ページ切り替え
 	if (input->GetButtonDown(XINPUT_BUTTON_DPAD_RIGHT))
 	{
+		PlaySoundSe(select_se, 70); // ページ切り替え音
 		current_page++;
 		if (current_page >= total_pages) current_page = 0; // 循環
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_LEFT))
 	{
+		PlaySoundSe(select_se, 70); // ページ切り替え音
 		current_page--;
 		if (current_page < 0) current_page = total_pages - 1; // 循環
 	}
@@ -41,6 +44,7 @@ eSceneType HelpScene::Update()
 	//Titleへ戻る処理
 	if (input->GetButtonDown(XINPUT_BUTTON_A))
 	{
+		PlaySoundSe(decision_se, 70); // 戻る音
 		return eSceneType::TITLE; // 戻るボタンでタイトルへ
 	}
 
@@ -242,13 +246,42 @@ void HelpScene::DrawAButton(int x, int y)
 
 void HelpScene::DrawStick(int x, int y)
 {
-	// スティックベース
-	int base_radius = 35;
-	DrawCircle(x, y, base_radius, GetColor(50, 50, 50), TRUE);  // 台座
+	int radius = 35;
 
-	// スティック先端（内側の球体）
-	int tip_radius = 22;
-	DrawCircle(x, y, tip_radius, GetColor(150, 150, 150), TRUE); // 先端
+	// 外側の丸（台座）
+	DrawCircle(x, y, radius, GetColor(50, 50, 50), TRUE);
+
+	// 中の十字線の長さ
+	int cross_length = radius * 0.5;
+	int cross_thickness = 50;
+
+	// 十字の縦線
+	DrawBox(x - cross_thickness / 2, y - cross_length / 2,
+		x + cross_thickness / 2, y + cross_length / 2,
+		GetColor(150, 150, 150), TRUE);
+
+	// 十字の横線
+	DrawBox(x - cross_length / 2, y - cross_thickness / 2,
+		x + cross_length / 2, y + cross_thickness / 2,
+		GetColor(150, 150, 150), TRUE);
+}
+
+void HelpScene::LoadResource()
+{
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	// SE
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1587112_選択・決定音（SFサイバー）1.mp3");
+	select_se = sounds_data[0];
+
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
+	decision_se = sounds_data[0];
+}
+
+void HelpScene::PlaySoundSe(int _handle, int volume)
+{
+	ChangeVolumeSoundMem(volume, _handle);
+	PlaySoundMem(_handle, DX_PLAYTYPE_BACK); // SEは1回のみ再生
 }
 
 
