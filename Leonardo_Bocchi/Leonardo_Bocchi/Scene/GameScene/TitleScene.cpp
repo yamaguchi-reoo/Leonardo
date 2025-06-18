@@ -163,7 +163,7 @@ void TitleScene::LoadResource()
 	title_bgm = sounds_data[0];
     if (CheckSoundMem(title_bgm) != 1)  // 1は再生中の意味
     {
-        PlaySoundBgm(title_bgm, 50);
+        PlaySoundBgm(title_bgm, 80);
     }
 
 	// SE

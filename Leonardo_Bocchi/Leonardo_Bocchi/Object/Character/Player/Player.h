@@ -41,6 +41,7 @@ private:
     int invincible_timer;
 
     bool is_goal;
+	int goal_timer = 0; // ゴールまでのタイマー
 
     std::map<ActionState,std::vector<int>> animation_data;
 

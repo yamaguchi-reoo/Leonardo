@@ -326,7 +326,7 @@ void GameMainScene::CreateItem()
 	std::shuffle(item_positions.begin(), item_positions.end(), gen);
 
 	// Å‘å3ŒÂ‚Ü‚ÅƒAƒCƒeƒ€‚ğ¶¬
-	int item_count = Min(3, static_cast<int>(item_positions.size()));
+	int item_count = Min(6, static_cast<int>(item_positions.size()));
 	for (int i = 0; i < item_count; ++i) {
 		const Vector2D& pos = item_positions[i];
 

@@ -59,7 +59,7 @@ void Player::Update()
 	if (is_invincible)
 	{
 		invincible_timer++;
-		if (invincible_timer >= 240)
+		if (invincible_timer >= 150)
 		{
 			invincible_timer = 0;
 			is_invincible = false;
@@ -87,6 +87,17 @@ void Player::Update()
 		heal_particles.end()
 	);
 
+
+	if (trap_hit_timer > 0.0f)
+	{
+		trap_hit_timer--;
+	}
+
+	if (goal_timer > 0)
+	{
+		goal_timer--;
+	}
+
 	__super::Update();
 }
 
@@ -112,11 +123,6 @@ void Player::Draw(Vector2D offset, double rate)
 	{
 		offset.y -= 4.5f;
 		__super::Draw(offset, 2.0);
-	}
-
-	if (trap_hit_timer > 0.0f)
-	{
-		trap_hit_timer--;
 	}
 
 
@@ -320,6 +326,12 @@ void Player::OnHitCollision(GameObject* hit_object)
 	if (hit_object->GetObjectType() == GOAL)
 	{
 		PlayerToGoal();
+
+		if (goal_timer <= 0)
+		{
+			sound_manager.PlaySoundSE(SoundType::GOAL, 80, true); // ƒS[ƒ‹‰¹
+			goal_timer = 60; // ƒS[ƒ‹Œã‚Ì–³“GŽžŠÔ
+		}
 		is_goal = true;
 	}
 
