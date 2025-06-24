@@ -8,7 +8,7 @@
 #include <iostream>
 #include <random>
 
-GameMainScene::GameMainScene() :stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0), clone_spawn_timer(0.0f), is_create(false), is_game_over(false), fade_alpha(0), font_48(0), font_24(0)
+GameMainScene::GameMainScene() :stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0), clone_spawn_timer(0.0f), is_create(false), is_game_over(false), fade_alpha(0), font_48(0), font_24(0), trap_num(0)
 {
 }
 
@@ -28,6 +28,8 @@ void GameMainScene::Initialize()
 
 	LoadGameMainResource();
 	PlayGameMainSound();   // シーン開始時に BGM をループ再生
+
+	trap_num = 3;
 }
 
 eSceneType GameMainScene::Update()
@@ -138,6 +140,7 @@ void GameMainScene::Draw()
 		DrawStringToHandle((SCREEN_WIDTH - hint_width) / 2, SCREEN_HEIGHT / 2 + 90, hint, GetColor(255, 255, 255), font_24);
 	}
 
+	//DrawFormatString(10, 500, GetColor(255, 255, 255), "%d", trap_num);
 }
 
 void GameMainScene::Finalize()
@@ -256,6 +259,7 @@ void GameMainScene::StageClear()
 		// プレイヤーの移動履歴を保存
 		stage_clear_history.push_back(p->GetMoveHistory());
 	}
+	trap_num += 1;
 }
 
 void GameMainScene::ReLoadStage()
@@ -374,7 +378,7 @@ void GameMainScene::CreateGimmick()
 	std::shuffle(trap_positions.begin(), trap_positions.end(), gen);
 
 	// 最大5個までトラップを生成
-	const int trap_count = Min(3, static_cast<int>(trap_positions.size()));
+	const int trap_count = Min(trap_num, static_cast<int>(trap_positions.size()));
 	for (int i = 0; i < trap_count; ++i) {
 		const Vector2D& pos = trap_positions[i];
 

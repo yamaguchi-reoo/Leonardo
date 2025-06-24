@@ -31,6 +31,8 @@ private:
 	int font_48; //フォント
 	int font_24; //フォント
 
+	int trap_num;
+
 public:
 	GameMainScene();
 	~GameMainScene();

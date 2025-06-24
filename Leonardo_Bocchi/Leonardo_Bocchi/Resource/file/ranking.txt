@@ -1,1 +1,5 @@
+GOD 25
+Z 3
+123 3
 AAA4 0
+AAAAA 0
