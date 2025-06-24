@@ -77,7 +77,7 @@ eSceneType TitleScene::Update()
 			next_scene = eSceneType::RANKING;
 			break;
 		case MENU_CREDITS: 
-			next_scene = eSceneType::RANKING; // クレジットシーンへ移行
+			next_scene = eSceneType::CREDITS; // クレジットシーンへ移行
 			break;
         case MENU_END:
             DxLib_End(); // DxLib を終了してアプリ終了

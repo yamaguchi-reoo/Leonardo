@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\GameScene\CreditScene.cpp" />
     <ClCompile Include="Scene\GameScene\HelpScene.cpp" />
     <ClCompile Include="Scene\GameScene\NameInputScene.cpp" />
     <ClCompile Include="Object\Stage\MoveBlock.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scene\GameScene\CreditScene.h" />
     <ClInclude Include="Scene\GameScene\HelpScene.h" />
     <ClInclude Include="Scene\GameScene\NameInputScene.h" />
     <ClInclude Include="Object\Character\Player\HealParticle.h" />

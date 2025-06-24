@@ -6,6 +6,7 @@
 #include "GameScene/RankingScene.h"
 #include "GameScene/NameInputScene.h"
 #include "GameScene/HelpScene.h"
+#include "GameScene/CreditScene.h"
 
 
 SceneManager::SceneManager() :current_scene(nullptr)
@@ -89,6 +90,8 @@ SceneBase* SceneManager::CreateScene(eSceneType type)
 		return dynamic_cast<SceneBase*>(new NameInputScene());
 	case eSceneType::HELP:
 		return dynamic_cast<SceneBase*>(new HelpScene());
+	case eSceneType::CREDITS:
+		return dynamic_cast<SceneBase*>(new CreditScene());
 	default:
 		return nullptr;
 	}
