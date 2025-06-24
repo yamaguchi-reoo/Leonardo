@@ -1,7 +1,8 @@
-#include "ResultScene.h"
+ï»¿#include "ResultScene.h"
 #include <DxLib.h>
 #include "../../Utility/InputControl.h"
 #include "../../Utility/ResourceManager.h"
+#include "../../Utility/UserTemplate.h"
 #include "../RankingManager.h"
 #include "../../common.h"
 
@@ -20,10 +21,10 @@ void ResultScene::Initialize()
 	ResourceManager* rm = ResourceManager::GetInstance();
 	rm->LoadFont("Resource/Font/TepidTerminal.ttf", "Tepid Terminal");
 
-	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_ƒTƒCƒo[‚ÈŠ´‚¶‚ÌŒˆ’è‰¹.mp3");
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_ã‚µã‚¤ãƒãƒ¼ãªæ„Ÿã˜ã®æ±ºå®šéŸ³.mp3");
 	decision_se = sounds_data[0];
 
-	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_97539_‰æ–Ê•\¦^ƒXƒNƒŠ[ƒ“ON^‰ğÍ^ƒfƒWƒ^ƒ‹.mp3");
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_97539_ç”»é¢è¡¨ç¤ºï¼ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ONï¼è§£æï¼ãƒ‡ã‚¸ã‚¿ãƒ«_Audio Trimmer.mp3");
 	result_se = sounds_data[0];
 
 	PlaySoundSe(result_se, 100);
@@ -33,11 +34,11 @@ eSceneType ResultScene::Update()
 {
 	InputControl* input = InputControl::GetInstance();
 
-	// ”š‚ª™X‚É‘‚¦‚éˆ—
+	// æ•°å­—ãŒå¾ã€…ã«å¢—ãˆã‚‹å‡¦ç†
 	if (display_clear_count < clear_count)
 	{
 		clear_timer++;
-		if (clear_timer % 3 == 0)  // 2ƒtƒŒ[ƒ€‚²‚Æ‚É‘‰Á
+		if (clear_timer % 5 == 0)  // 2ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã«å¢—åŠ 
 		{
 			display_clear_count++;
 		}
@@ -45,14 +46,14 @@ eSceneType ResultScene::Update()
 
 	if (input->GetButtonDown(XINPUT_BUTTON_A))
 	{
-		PlaySoundSe(decision_se, 70); // Œˆ’è‰¹‚ğÄ¶
-		// ƒ‰ƒ“ƒLƒ“ƒO‚Æ”äŠr
+		PlaySoundSe(decision_se, 70); // æ±ºå®šéŸ³ã‚’å†ç”Ÿ
+		// ãƒ©ãƒ³ã‚­ãƒ³ã‚°ã¨æ¯”è¼ƒ
 		const auto& rankings = RankingManager::GetInstance()->GetRankings();
 		bool is_high_score = false;
 
 		if (rankings.size() < 10)
 		{
-			is_high_score = true; // ƒ‰ƒ“ƒLƒ“ƒO‚ª10Œ–¢–‚È‚ç•K‚¸ƒnƒCƒXƒRƒA
+			is_high_score = true; // ãƒ©ãƒ³ã‚­ãƒ³ã‚°ãŒ10ä»¶æœªæº€ãªã‚‰å¿…ãšãƒã‚¤ã‚¹ã‚³ã‚¢
 		}
 		else
 		{
@@ -66,7 +67,7 @@ eSceneType ResultScene::Update()
 			}
 		}
 
-		// ƒXƒRƒA‚ªƒ‰ƒ“ƒLƒ“ƒO‚É“ü‚éê‡‚Í–¼‘O“ü—Í‚Ö
+		// ã‚¹ã‚³ã‚¢ãŒãƒ©ãƒ³ã‚­ãƒ³ã‚°ã«å…¥ã‚‹å ´åˆã¯åå‰å…¥åŠ›ã¸
 		if (is_high_score)
 		{
 			return eSceneType::NAME_INPUT;
@@ -75,6 +76,16 @@ eSceneType ResultScene::Update()
 		{
 			clear_count = 0;
 			return eSceneType::TITLE;
+		}
+	}
+
+	if (!is_box_expanded)
+	{
+		box_anim_timer++;
+		if (box_anim_timer >= box_anim_duration)
+		{
+			box_anim_timer = box_anim_duration;
+			is_box_expanded = true;
 		}
 	}
 	return __super::Update();
@@ -91,8 +102,8 @@ void ResultScene::Draw()
 	std::string result_text = "== RESULT ==";
 	int result_width = GetDrawStringWidthToHandle(result_text.c_str(), result_text.size(), title_font);
 	int result_x = (SCREEN_WIDTH - result_width) / 2;
-	DrawStringToHandle(result_x + 4, 104, result_text.c_str(), GetColor(0, 0, 0), title_font); // ‰e
-	DrawStringToHandle(result_x, 50, result_text.c_str(), GetColor(255, 255, 255), title_font);  // ‹àF
+	DrawStringToHandle(result_x + 4, 104, result_text.c_str(), GetColor(0, 0, 0), title_font); // å½±
+	DrawStringToHandle(result_x, 50, result_text.c_str(), GetColor(255, 255, 255), title_font);  // é‡‘è‰²
 
 
 	std::string clear_text = "Clear Count : " + std::to_string(display_clear_count);
@@ -100,19 +111,50 @@ void ResultScene::Draw()
 	int clear_x = (SCREEN_WIDTH - clear_width) / 2;
 
 
-	DrawBox(clear_x - 20, SCREEN_HEIGHT / 2 - 10, clear_x + clear_width + 20, SCREEN_HEIGHT / 2 + 60, GetColor(100, 100, 100), TRUE);
-	DrawBox(clear_x - 20, SCREEN_HEIGHT / 2 - 10, clear_x + clear_width + 20, SCREEN_HEIGHT / 2 + 60, GetColor(255, 255, 128), FALSE);
+	//////////////////////////////////////
 
-	DrawStringToHandle(clear_x + 2, SCREEN_HEIGHT / 2 + 2, clear_text.c_str(), GetColor(0, 0, 0), score_font); // ‰e
-	DrawStringToHandle(clear_x, SCREEN_HEIGHT / 2, clear_text.c_str(), GetColor(255, 255, 128), score_font);  // –{‘Ì
+	// ä¸­å¤®ã®ã‚¹ã‚³ã‚¢è¡¨ç¤ºç”¨ãƒœãƒƒã‚¯ã‚¹ã®å±•é–‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+	float t = (float)box_anim_timer / box_anim_duration; // 0.0ã€œ1.0
+	t = Clamp(t, 0.0f, 1.0f);
+
+	// å±•é–‹ã™ã‚‹çŸ©å½¢ã‚µã‚¤ã‚ºã®è£œé–“
+	int box_max_width = clear_width + 40;
+	int box_max_height = 70;
+
+	int box_width = static_cast<int>(box_max_width * t);
+	int box_height = static_cast<int>(box_max_height * t);
+
+	// ä¸­å¿ƒã‚’åŸºæº–ã«æç”»
+	int center_x = SCREEN_WIDTH / 2;
+	int center_y = SCREEN_HEIGHT / 2 + 25;
+
+	int left = center_x - box_width / 2;
+	int right = center_x + box_width / 2;
+	int top = center_y - box_height / 2;
+	int bottom = center_y + box_height / 2;
+
+	// å±•é–‹ã™ã‚‹ãƒœãƒƒã‚¯ã‚¹ã®æç”»
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(t * 255));
+	DrawBox(left, top, right, bottom, GetColor(100, 100, 100), TRUE);  // ä¸­èº«
+	DrawBox(left, top, right, bottom, GetColor(255, 255, 128), FALSE); // æ ç·š
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	// å±•é–‹ãŒå®Œäº†ã—ãŸã‚‰æ–‡å­—ã‚’æç”»
+	if (is_box_expanded)
+	{
+		DrawStringToHandle(clear_x + 2, SCREEN_HEIGHT / 2 + 2, clear_text.c_str(), GetColor(0, 0, 0), score_font); // å½±
+		DrawStringToHandle(clear_x, SCREEN_HEIGHT / 2, clear_text.c_str(), GetColor(255, 255, 128), score_font);  // æœ¬ä½“
+	}
+
+	/////////////////////////////////
 
 
 	std::string hint = "Press [A] to";
 	int hint_width = GetDrawStringWidthToHandle(hint.c_str(), hint.size(), hint_font);
 	int hint_x = (SCREEN_WIDTH - hint_width) / 2;
 
-	DrawStringToHandle(hint_x + 2, SCREEN_HEIGHT - 48, hint.c_str(), GetColor(0, 0, 0), hint_font);   // ‰e
-	DrawStringToHandle(hint_x, SCREEN_HEIGHT - 50, hint.c_str(), GetColor(180, 180, 180), hint_font); // –{‘Ì
+	DrawStringToHandle(hint_x + 2, SCREEN_HEIGHT - 48, hint.c_str(), GetColor(0, 0, 0), hint_font);   // å½±
+	DrawStringToHandle(hint_x, SCREEN_HEIGHT - 50, hint.c_str(), GetColor(180, 180, 180), hint_font); // æœ¬ä½“
 }
 
 
@@ -128,6 +170,6 @@ eSceneType ResultScene::GetNowSceneType() const
 void ResultScene::PlaySoundSe(int _handle, int volume)
 {
 	ChangeVolumeSoundMem(volume, _handle);
-	PlaySoundMem(_handle, DX_PLAYTYPE_BACK); // SE‚Í1‰ñ‚Ì‚İÄ¶
+	PlaySoundMem(_handle, DX_PLAYTYPE_BACK); // SEã¯1å›ã®ã¿å†ç”Ÿ
 }
 
