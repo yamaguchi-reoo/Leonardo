@@ -9,6 +9,7 @@ private:
 
 	std::vector<int> sounds_data;
 	int decision_se;
+	int result_se;
 
 public:
 	ResultScene();

@@ -5,7 +5,7 @@
 #include "../RankingManager.h"
 #include "../../common.h"
 
-ResultScene::ResultScene(): decision_se(-1)
+ResultScene::ResultScene() : decision_se(-1), result_se(-1)
 {
 }
 
@@ -22,6 +22,11 @@ void ResultScene::Initialize()
 
 	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
 	decision_se = sounds_data[0];
+
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_97539_画面表示／スクリーンON／解析／デジタル.mp3");
+	result_se = sounds_data[0];
+
+	PlaySoundSe(result_se, 100);
 }
 
 eSceneType ResultScene::Update()
@@ -32,7 +37,7 @@ eSceneType ResultScene::Update()
 	if (display_clear_count < clear_count)
 	{
 		clear_timer++;
-		if (clear_timer % 4 == 0)  // 2フレームごとに増加
+		if (clear_timer % 3 == 0)  // 2フレームごとに増加
 		{
 			display_clear_count++;
 		}

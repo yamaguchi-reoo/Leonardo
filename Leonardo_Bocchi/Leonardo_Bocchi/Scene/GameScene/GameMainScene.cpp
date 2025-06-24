@@ -1,103 +1,81 @@
-#include "GameMainScene.h"
+#include "GameMainScene.h" 
 #include "DxLib.h"
 #include "../../Object/ObjectList.h"
 #include "../../Utility/UtilityList.h"
-
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <random>
 
-GameMainScene::GameMainScene() :stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0), clone_spawn_timer(0.0f), is_create(false), is_game_over(false), fade_alpha(0), font_48(0), font_24(0), trap_num(0), decision_se(-1),main_bgm(-1),game_over_se(-1)
+namespace {
+	constexpr int GAME_OVER_FADE_MAX = 200;
+	constexpr int GAME_OVER_WAIT_FRAMES = 20;
+	constexpr int TRAP_LIMIT = 5;
+	constexpr int ITEM_LIMIT = 3;
+	constexpr int GOAL_Y_THRESHOLD = 850;
+	constexpr int CLONE_SPAWN_DELAY = 50;
+	constexpr int STAGE_Y_BASE = 720;
+	constexpr int BOX_SIZE_F = 48;
+	constexpr int INVINCIBLE_LIMIT = 2;
+	constexpr int FADE_SPEED = 5;
+}
+
+GameMainScene::GameMainScene()
+	: stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0),
+	clone_spawn_timer(0.0f), is_create(false), is_game_over(false), is_decided(false), fade_alpha(0),
+	font_48(0), font_24(0), trap_num(0), decision_se(-1), main_bgm(-1), game_over_se(-1), game_over_timer(0)
 {
 }
 
-GameMainScene::~GameMainScene()
-{
-}
+GameMainScene::~GameMainScene() {}
 
 void GameMainScene::Initialize()
 {
-	//ステージを読み込む
 	LoadStage();
-	//カメラの初期位置を設定
-	camera_location = Vector2D(0.0f, 0.0f); //カメラの初期位置を設定
-	//back_ground_image = LoadGraph("Resource/Images/back_ground.png"); // 背景画像を読み込む
-	back_ground_image = LoadGraph("Resource/Images/BackGround/Base_Color.png"); // 背景画像を読み込む
-
-
+	camera_location = Vector2D(0.0f, 0.0f);
+	back_ground_image = LoadGraph("Resource/Images/BackGround/Base_Color.png");
 	LoadGameMainResource();
 	PlaySoundBgm(main_bgm, 60);
-
 	trap_num = 3;
 }
 
 eSceneType GameMainScene::Update()
 {
-	//ステージリロード	
-	if (IsStageReload() && goal_point && !goal_point->IsActive())
-	{
-		//ステージクリア時の処理
+	if (IsStageReload() && goal_point && !goal_point->IsActive()) {
 		StageClear();
-		//ステージの再読み込み
 		ReLoadStage();
 	}
-	//カメラ更新
+
 	UpdateCamera();
 
-	// プレイヤーがいない場合のみ探す
-	if (!player)
-	{
-		FindPlayer();
+	if (!player) FindPlayer();
+
+	if (!is_create && ++clone_spawn_timer >= CLONE_SPAWN_DELAY) {
+		CreateClone();
+		clone_spawn_timer = 0;
+		is_create = true;
 	}
 
-
-	if (!is_create)
-	{
-		clone_spawn_timer++;
-		if (clone_spawn_timer >= 50)
-		{
-			CreateClone();
-			clone_spawn_timer = 0;
-			is_create = true;
-		}
-	}
-
-	//死亡処理
-	if (player->GetHp() <= 0 || player->GetLocation().y > 850.0f)
-	{
+	if (!is_game_over && (player->GetHp() <= 0 || player->GetLocation().y > GOAL_Y_THRESHOLD)) {
 		player->SetDelete();
 		is_game_over = true;
+		fade_alpha = 0;
+		PlaySoundSe(game_over_se, 100);
 	}
 
+	if (is_game_over) {
+		fade_alpha = Min(fade_alpha + FADE_SPEED, GAME_OVER_FADE_MAX);
 
-	if (is_game_over)
-	{
-		if (fade_alpha < 200)
-		{
-			fade_alpha += 5;
-		}
-		
-		InputControl* input = InputControl::GetInstance();
-
-		if (input->GetButtonDown(XINPUT_BUTTON_A))
-		{
-			PlaySoundSe(decision_se, 80);	
+		if (InputControl::GetInstance()->GetButtonDown(XINPUT_BUTTON_A)) {
+			PlaySoundSe(decision_se, 80);
 			is_decided = true;
 			game_over_timer = 0;
-			//return eSceneType::RESULT;
-			is_game_over = false;
 		}
 	}
 
-	//効果音再生中は何もしないで、再生完了を待つ
-	if (is_decided)
-	{
-		game_over_timer++;
-		if (game_over_timer >= 30)
-		{
-			return eSceneType::RESULT; // 効果音が終わったら遷移
-		}
+	if (is_decided && ++game_over_timer >= GAME_OVER_WAIT_FRAMES) {
+		is_game_over = false;
+		return eSceneType::RESULT;
 	}
 
 	return __super::Update();
@@ -105,46 +83,30 @@ eSceneType GameMainScene::Update()
 
 void GameMainScene::Draw()
 {
-	ResourceManager* rm = ResourceManager::GetInstance();
-
-	//DrawGraph(0, 0, back_ground_image, TRUE); // 背景画像を読み込む
-	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(10, 10, 30), TRUE); // 背景色を描画
-
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(10, 10, 30), TRUE);
 	__super::Draw();
 
-	InputControl* input = InputControl::GetInstance();
-	if (input->GetKey(KEY_INPUT_0)) {
+	if (InputControl::GetInstance()->GetKey(KEY_INPUT_0)) {
 		for (int i = 0; i < stage_height_num; ++i)
-		{
 			for (int j = 0; j < stage_width_num; ++j)
-			{
-				DrawFormatString(j * 48, i * 48, GetColor(255, 255, 255), "%d", stage_data[i][j]);
-			}
-		}
+				DrawFormatString(j * BOX_SIZE, i * BOX_SIZE, GetColor(255, 255, 255), "%d", stage_data[i][j]);
 	}
 
 	DrawUI();
 
-	// ゲームオーバー中なら文字を描画
-	if (is_game_over)
-	{
-		// 半透明の黒い背景
+	if (is_game_over) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, fade_alpha);
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-		// ゲームオーバー文字
 		const char* msg = "GAME OVER";
 		int text_width = GetDrawStringWidthToHandle(msg, strlen(msg), font_48);
 		DrawStringToHandle((SCREEN_WIDTH - text_width) / 2, SCREEN_HEIGHT / 2 - 50, msg, GetColor(255, 0, 0), font_48);
-
 
 		const char* hint = "Press A to continue";
 		int hint_width = GetDrawStringWidthToHandle(hint, strlen(hint), font_24);
 		DrawStringToHandle((SCREEN_WIDTH - hint_width) / 2, SCREEN_HEIGHT / 2 + 90, hint, GetColor(255, 255, 255), font_24);
 	}
-
-	//DrawFormatString(10, 500, GetColor(255, 255, 255), "%d", trap_num);
 }
 
 void GameMainScene::Finalize()
@@ -152,7 +114,7 @@ void GameMainScene::Finalize()
 	DeleteGraph(back_ground_image);
 	back_ground_image = 0;
 
-	StopGameMainSound();   // シーン終了時に停止
+	StopGameMainSound();
 	ResourceManager::GetInstance()->UnloadResourcesAll();
 	ResourceManager::DeleteInstance();
 }
@@ -161,6 +123,7 @@ eSceneType GameMainScene::GetNowSceneType() const
 {
 	return eSceneType::GAME_MAIN;
 }
+
 
 void GameMainScene::LoadStage()
 {
@@ -211,29 +174,36 @@ void GameMainScene::LoadStage()
 
 void GameMainScene::SetStage()
 {
-	for (int i = 0; i < stage_height_num; ++i) {
-		for (int j = 0; j < stage_width_num; ++j) {
-			int x = j * BOX_SIZE;
-			int y = 720 - ((stage_height_num - i) * BOX_SIZE);
-			Vector2D pos(x, y);
+	const Vector2D block_size((float)BOX_SIZE);
 
-			switch (stage_data[i][j]) {
-			case EMPTY: break;
-			case BLOCK: CreateObject<Block>(pos, Vector2D((float)BOX_SIZE)); break;
-			case PLAYER: CreateObject<Player>(pos, Vector2D(48.0f, 64.0f)); break;
-			case MOVE_BLOCK: CreateObject<MoveBlock>(pos, Vector2D((float)BOX_SIZE, 24.0f)); break;
-			case GOAL: CreateObject<GoalPoint>(pos, Vector2D((float)BOX_SIZE / 2, (float)BOX_SIZE / 1.5));
-				goal_pos = pos;
-				break;
-			default: break;
+	for (int y = 0; y < stage_height_num; ++y) {
+		for (int x = 0; x < stage_width_num; ++x) {
+			Vector2D world_pos(x * BOX_SIZE, 720 - ((stage_height_num - y) * BOX_SIZE));
+			int tile = stage_data[y][x];
+
+			switch (tile) {
+				case EMPTY: break;
+				case BLOCK:
+					CreateObject<Block>(world_pos, block_size);
+					break;
+				case PLAYER:
+					CreateObject<Player>(world_pos, Vector2D(48.0f, 64.0f));
+					break;
+				case MOVE_BLOCK:
+					CreateObject<MoveBlock>(world_pos, Vector2D(BOX_SIZE, 24.0f));
+					break;
+				case GOAL:
+					CreateObject<GoalPoint>(world_pos, Vector2D(BOX_SIZE / 2.0f, BOX_SIZE / 1.5f));
+					goal_pos = world_pos;
+					break;
 			}
 		}
 	}
 
 	CreateItem();
 	CreateGimmick();
-
 }
+
 
 void GameMainScene::UpdateCamera()
 {
