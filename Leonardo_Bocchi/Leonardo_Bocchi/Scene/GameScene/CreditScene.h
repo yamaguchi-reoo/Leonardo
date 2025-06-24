@@ -14,6 +14,7 @@ private:
     int credit_se;
     bool is_skip;
 
+
 public:
 
     CreditScene();

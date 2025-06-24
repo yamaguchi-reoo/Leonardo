@@ -5,7 +5,7 @@
 #include "TitleScene.h"
 
 
-CreditScene::CreditScene()
+CreditScene::CreditScene() :scroll_pos(0), credit_font(-1), is_skip(false), credit_se(-1)
 {
 }
 
@@ -123,6 +123,8 @@ void CreditScene::LoadCreditText()
         "Hamo / Audiostock",
         "Amagurineko / Audiostock",
         "new_field / Audiostock",
+        "",
+        "",
         "",
         "",
         "",
