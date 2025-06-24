@@ -14,6 +14,7 @@ private:
 	int box_anim_timer = 0;               // ボックス展開用のアニメーションタイマー
 	const int box_anim_duration = 30;     // 展開にかかる時間（フレーム数）
 	bool is_box_expanded = false;         // 展開完了したか
+	bool is_score_count_done = false;
 
 public:
 	ResultScene();

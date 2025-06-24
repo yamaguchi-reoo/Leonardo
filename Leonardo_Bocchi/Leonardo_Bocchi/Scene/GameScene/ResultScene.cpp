@@ -34,51 +34,7 @@ eSceneType ResultScene::Update()
 {
 	InputControl* input = InputControl::GetInstance();
 
-	// 数字が徐々に増える処理
-	if (display_clear_count < clear_count)
-	{
-		clear_timer++;
-		if (clear_timer % 5 == 0)  // 2フレームごとに増加
-		{
-			display_clear_count++;
-		}
-	}
-
-	if (input->GetButtonDown(XINPUT_BUTTON_A))
-	{
-		PlaySoundSe(decision_se, 70); // 決定音を再生
-		// ランキングと比較
-		const auto& rankings = RankingManager::GetInstance()->GetRankings();
-		bool is_high_score = false;
-
-		if (rankings.size() < 10)
-		{
-			is_high_score = true; // ランキングが10件未満なら必ずハイスコア
-		}
-		else
-		{
-			for (const auto& r : rankings)
-			{
-				if (clear_count >= r.score)
-				{
-					is_high_score = true;
-					break;
-				}
-			}
-		}
-
-		// スコアがランキングに入る場合は名前入力へ
-		if (is_high_score)
-		{
-			return eSceneType::NAME_INPUT;
-		}
-		else
-		{
-			clear_count = 0;
-			return eSceneType::TITLE;
-		}
-	}
-
+	// ボックス展開アニメーション
 	if (!is_box_expanded)
 	{
 		box_anim_timer++;
@@ -88,8 +44,67 @@ eSceneType ResultScene::Update()
 			is_box_expanded = true;
 		}
 	}
+	else
+	{
+		// スコア表示アニメーション
+		if (display_clear_count < clear_count)
+		{
+			clear_timer++;
+			if (clear_timer % 5 == 0)
+			{
+				display_clear_count++;
+			}
+		}
+		else
+		{
+			is_score_count_done = true; // アニメーション完了フラグ
+		}
+	}
+
+	// スキップ入力（※アニメーション完了後のみ許可）
+	if (is_box_expanded && is_score_count_done)
+	{
+		if (input->GetButtonDown(XINPUT_BUTTON_A))
+		{
+			PlaySoundSe(decision_se, 70); // 決定音を再生
+
+			// ランキング比較
+			const auto& rankings = RankingManager::GetInstance()->GetRankings();
+			bool is_high_score = false;
+
+			if (rankings.size() < 10)
+			{
+				is_high_score = true;
+			}
+			else
+			{
+				for (const auto& r : rankings)
+				{
+					if (clear_count >= r.score)
+					{
+						is_high_score = true;
+						break;
+					}
+				}
+			}
+
+			// スコアがランキングに入る場合は名前入力へ
+			if (is_high_score)
+			{
+				return eSceneType::NAME_INPUT;
+			}
+			else
+			{
+				clear_count = 0;
+				return eSceneType::TITLE;
+			}
+		}
+	}
+
 	return __super::Update();
 }
+
+
 
 void ResultScene::Draw()
 {
