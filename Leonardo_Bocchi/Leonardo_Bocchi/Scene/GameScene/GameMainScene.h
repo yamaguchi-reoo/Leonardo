@@ -26,12 +26,20 @@ private:
 	bool is_create;
 
 	bool is_game_over;         // ゲームオーバー状態かどうか
+	bool is_game_over_first_frame;
+	int game_over_timer;
+
 	int fade_alpha;
 
 	int font_48; //フォント
 	int font_24; //フォント
 
 	int trap_num;
+
+	int decision_se;
+	int game_over_se;
+	int main_bgm;
+
 
 public:
 	GameMainScene();

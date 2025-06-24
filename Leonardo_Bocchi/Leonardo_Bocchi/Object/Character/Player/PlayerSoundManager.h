@@ -15,6 +15,7 @@ enum class SoundType
     GOAL,
     TELEPORT,
 	TRAP,
+    DEATH
 };
 
 class PlayerSoundManager

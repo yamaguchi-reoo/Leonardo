@@ -8,7 +8,7 @@
 #include <iostream>
 #include <random>
 
-GameMainScene::GameMainScene() :stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0), clone_spawn_timer(0.0f), is_create(false), is_game_over(false), fade_alpha(0), font_48(0), font_24(0), trap_num(0)
+GameMainScene::GameMainScene() :stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0), clone_spawn_timer(0.0f), is_create(false), is_game_over(false), fade_alpha(0), font_48(0), font_24(0), trap_num(0), decision_se(-1),main_bgm(-1),game_over_se(-1)
 {
 }
 
@@ -73,6 +73,8 @@ eSceneType GameMainScene::Update()
 	//死亡処理
 	if (player->GetHp() <= 0 || player->GetLocation().y > 850.0f)
 	{
+		//ChangeVolumeSoundMem(100, game_over_se); // 決定音の音量を変更
+		//PlaySoundMem(game_over_se, DX_PLAYTYPE_BACK); // ゲームオーバー音を再生
 		player->SetDelete();
 		is_game_over = true;
 	}
@@ -88,6 +90,8 @@ eSceneType GameMainScene::Update()
 
 		if (input->GetButtonDown(XINPUT_BUTTON_A))
 		{
+			ChangeVolumeSoundMem(100, decision_se); 
+			PlaySoundMem(decision_se, DX_PLAYTYPE_BACK);
 			is_game_over = false;
 			return eSceneType::RESULT;
 		}
@@ -126,15 +130,12 @@ void GameMainScene::Draw()
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-
-		//SetFontSize(48);
 		// ゲームオーバー文字
 		const char* msg = "GAME OVER";
 		int text_width = GetDrawStringWidthToHandle(msg, strlen(msg), font_48);
 		DrawStringToHandle((SCREEN_WIDTH - text_width) / 2, SCREEN_HEIGHT / 2 - 50, msg, GetColor(255, 0, 0), font_48);
 
 
-		//SetFontSize(24);
 		const char* hint = "Press A to continue";
 		int hint_width = GetDrawStringWidthToHandle(hint, strlen(hint), font_24);
 		DrawStringToHandle((SCREEN_WIDTH - hint_width) / 2, SCREEN_HEIGHT / 2 + 90, hint, GetColor(255, 255, 255), font_24);
@@ -397,6 +398,12 @@ void GameMainScene::LoadGameMainResource()
 	//サウンド読込
 	//rm->GetSound("Resource/Sounds/BGM/AS_259735_ストイックなサイバー感4つ打ち.mp3");
 	sounds_data = rm->GetSound("Resource/Sounds/BGM/AS_259735_ストイックなサイバー感4つ打ち.mp3");
+	main_bgm = sounds_data[0];
+
+	//sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
+	//decision_se = sounds_data[0];
+	decision_se = LoadSoundMem("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
+	game_over_se = LoadSoundMem("Resource/Sounds/SE/AS_1593387_がっくり、ダメな感じの音.mp3");
 
 	//フォント読込
 	rm->LoadFont("Resource/Font/TepidTerminal.ttf", "Tepid Terminal");
@@ -411,7 +418,7 @@ void GameMainScene::PlayGameMainSound()
 {
 	if (!sounds_data.empty())
 	{
-		int handle = sounds_data[0];
+		int handle = main_bgm;
 		ChangeVolumeSoundMem(60, handle);
 
 		PlaySoundMem(handle, DX_PLAYTYPE_LOOP); // BGMをループ再生
