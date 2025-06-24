@@ -27,7 +27,7 @@ void GameMainScene::Initialize()
 
 
 	LoadGameMainResource();
-	PlayGameMainSound();   // シーン開始時に BGM をループ再生
+	PlaySoundBgm(main_bgm, 60);
 
 	trap_num = 3;
 }
@@ -35,19 +35,12 @@ void GameMainScene::Initialize()
 eSceneType GameMainScene::Update()
 {
 	//ステージリロード	
-	if (IsStageReload())
+	if (IsStageReload() && goal_point && !goal_point->IsActive())
 	{
-
-		if (goal_point && !goal_point->IsActive())
-		{
-			//ステージクリア時の処理
-			StageClear();
-
-			//ステージの再読み込み
-			ReLoadStage();
-		}
-
-
+		//ステージクリア時の処理
+		StageClear();
+		//ステージの再読み込み
+		ReLoadStage();
 	}
 	//カメラ更新
 	UpdateCamera();
@@ -73,8 +66,6 @@ eSceneType GameMainScene::Update()
 	//死亡処理
 	if (player->GetHp() <= 0 || player->GetLocation().y > 850.0f)
 	{
-		//ChangeVolumeSoundMem(100, game_over_se); // 決定音の音量を変更
-		//PlaySoundMem(game_over_se, DX_PLAYTYPE_BACK); // ゲームオーバー音を再生
 		player->SetDelete();
 		is_game_over = true;
 	}
@@ -86,14 +77,26 @@ eSceneType GameMainScene::Update()
 		{
 			fade_alpha += 5;
 		}
+		
 		InputControl* input = InputControl::GetInstance();
 
 		if (input->GetButtonDown(XINPUT_BUTTON_A))
 		{
-			ChangeVolumeSoundMem(100, decision_se); 
-			PlaySoundMem(decision_se, DX_PLAYTYPE_BACK);
+			PlaySoundSe(decision_se, 80);	
+			is_decided = true;
+			game_over_timer = 0;
+			//return eSceneType::RESULT;
 			is_game_over = false;
-			return eSceneType::RESULT;
+		}
+	}
+
+	//効果音再生中は何もしないで、再生完了を待つ
+	if (is_decided)
+	{
+		game_over_timer++;
+		if (game_over_timer >= 30)
+		{
+			return eSceneType::RESULT; // 効果音が終わったら遷移
 		}
 	}
 
@@ -331,7 +334,7 @@ void GameMainScene::CreateItem()
 	std::shuffle(item_positions.begin(), item_positions.end(), gen);
 
 	// 最大3個までアイテムを生成
-	int item_count = Min(6, static_cast<int>(item_positions.size()));
+	int item_count = Min(3, static_cast<int>(item_positions.size()));
 	for (int i = 0; i < item_count; ++i) {
 		const Vector2D& pos = item_positions[i];
 
@@ -339,12 +342,12 @@ void GameMainScene::CreateItem()
 		int grid_y = stage_height_num - ((720 - pos.y) / BOX_SIZE);
 
 		if (i % 2 == 0) {
-			CreateObject<InvincibleItem>(pos, Vector2D((float)BOX_SIZE));
-			stage_data[grid_y][grid_x] = INVINCIBLE;
-		}
-		else {
 			CreateObject<HealItem>(pos, Vector2D((float)BOX_SIZE));
 			stage_data[grid_y][grid_x] = HEAL;
+		}
+		else {
+			CreateObject<InvincibleItem>(pos, Vector2D((float)BOX_SIZE));
+			stage_data[grid_y][grid_x] = INVINCIBLE;
 		}
 	}
 }
@@ -400,10 +403,11 @@ void GameMainScene::LoadGameMainResource()
 	sounds_data = rm->GetSound("Resource/Sounds/BGM/AS_259735_ストイックなサイバー感4つ打ち.mp3");
 	main_bgm = sounds_data[0];
 
-	//sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
-	//decision_se = sounds_data[0];
-	decision_se = LoadSoundMem("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
-	game_over_se = LoadSoundMem("Resource/Sounds/SE/AS_1593387_がっくり、ダメな感じの音.mp3");
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1296213_サイバーな感じの決定音.mp3");
+	decision_se = sounds_data[0];
+
+	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_1593387_がっくり、ダメな感じの音.mp3");
+	game_over_se = sounds_data[0];
 
 	//フォント読込
 	rm->LoadFont("Resource/Font/TepidTerminal.ttf", "Tepid Terminal");
@@ -414,15 +418,17 @@ void GameMainScene::LoadGameMainResource()
 	heart_img = LoadGraph("Resource/Images/UI/Hp.png"); // ハート画像を読み込む
 }
 
-void GameMainScene::PlayGameMainSound()
-{
-	if (!sounds_data.empty())
-	{
-		int handle = main_bgm;
-		ChangeVolumeSoundMem(60, handle);
 
-		PlaySoundMem(handle, DX_PLAYTYPE_LOOP); // BGMをループ再生
-	}
+void GameMainScene::PlaySoundBgm(int _handle, int volume)
+{
+	ChangeVolumeSoundMem(volume, _handle);
+	PlaySoundMem(_handle, DX_PLAYTYPE_LOOP); // BGMをループ再生
+}
+
+void GameMainScene::PlaySoundSe(int _handle, int volume)
+{
+	ChangeVolumeSoundMem(volume, _handle);
+	PlaySoundMem(_handle, DX_PLAYTYPE_BACK); // SEは1回のみ再生
 }
 
 void GameMainScene::StopGameMainSound()

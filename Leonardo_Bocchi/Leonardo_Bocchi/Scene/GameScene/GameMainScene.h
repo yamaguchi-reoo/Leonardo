@@ -40,6 +40,7 @@ private:
 	int game_over_se;
 	int main_bgm;
 
+	int is_decided;
 
 public:
 	GameMainScene();
@@ -81,7 +82,9 @@ public:
 
 	void LoadGameMainResource();
 
-	void PlayGameMainSound();
+	void PlaySoundBgm(int _handle, int volume);
+
+	void PlaySoundSe(int _handle, int volume);
 
 	void StopGameMainSound();
 
