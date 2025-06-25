@@ -82,35 +82,27 @@ void CreditScene::LoadCreditText()
         "== CREDITS ==",
         "",
         "[Character Art]",
-        "Ansimuz —l",
-        "Player / Enemy : Super Grotto Escape Pack",
+        "Super Grotto Escape Pack by Ansimuz",
         "",
         "",
         "",
-
-        "[Illustration]",
-        "ACillust",
-        "ChatGPT"
+        "[Object Art]",
+        "Assets from ACillust",
         "",
         "",
         "",
-
         "[Font]",
-        "philtacular —l",
-        "Font : tepid-terminal",
+        "tepid-terminal by philtacular",
         "",
         "",
         "",
-        "",
-
         "[BGM]",
         "AKM Music / Audiostock",
         "STUDIO COM / Audiostock",
         "",
         "",
         "",
-
-        "[Sound Effects]",
+         "[Sound Effects]",
         "green air / Audiostock",
         "Takumi Hidani / Audiostock",
         "Killy / Audiostock",
@@ -126,11 +118,13 @@ void CreditScene::LoadCreditText()
         "",
         "",
         "",
+        "[Support Tool]",
+        "ChatGPT",
         "",
         "",
         "",
-
         "Thank you for playing!",
     };
+
 }
 
