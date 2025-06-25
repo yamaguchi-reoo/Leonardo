@@ -54,7 +54,7 @@ void TutorialSign::Update(const Vector2D& player_pos)
         else
         {
             visible_timer++;
-            if (visible_timer > 240)
+            if (visible_timer > 120)
             {
                 is_close = true;
                 is_visible = false;
@@ -87,7 +87,12 @@ void TutorialSign::Draw()
 {
     if (!is_visible && !is_animating && !is_close) return;
 
-    int x = static_cast<int>(position.x - box_width / 2);
+    // 画面中央の座標
+    int center_x = SCREEN_WIDTH / 2;
+    //int center_y = SCREEN_HEIGHT / 2;
+
+    // 四角形の左上座標（中央基準で幅・高さの半分を引く）
+    int x = static_cast<int>(center_x - box_width / 2);
     int y = static_cast<int>(position.y - box_height / 2);
 
     int bg_color = GetColor(50, 50, 50);
@@ -113,7 +118,7 @@ void TutorialSign::Draw()
         {
             std::string line = message.substr(start, end - start);
             int line_w = GetDrawStringWidthToHandle(line.c_str(), line.size(), font);
-            int line_x = (SCREEN_WIDTH - line_w) / 2;
+            int line_x = center_x - line_w / 2;  // 画面中央基準でセンタリング
             DrawStringToHandle(line_x, line_y, line.c_str(), GetColor(255, 255, 255), font);
             line_y += 28;
             start = end + 1;
@@ -121,7 +126,8 @@ void TutorialSign::Draw()
 
         std::string last_line = message.substr(start);
         int last_w = GetDrawStringWidthToHandle(last_line.c_str(), last_line.size(), font);
-        int last_x = (SCREEN_WIDTH - last_w) / 2;
+        int last_x = center_x - last_w / 2;
         DrawStringToHandle(last_x, line_y, last_line.c_str(), GetColor(255, 255, 255), font);
     }
 }
+

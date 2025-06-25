@@ -469,9 +469,10 @@ void GameMainScene::DrawUI() const
 
 void GameMainScene::TutorialMessage()
 {
-	sings.emplace_back(Vector2D(640, 250), "Let's  move\n<- ->", 100);
+	sings.emplace_back(Vector2D(300, 200), "Let's move\n\n<- -> ", 50);
 	//sings.emplace_back(Vector2D(600, 200), "Jump A");
-
+	sings.emplace_back(Vector2D(1400, 200), "Let's Jump\n\nA button", 100);
+	sings.emplace_back(Vector2D(2400, 200), "Let's High Jump\n\nA button hold", 100);
 
 	for (auto& s : sings)
 	{
