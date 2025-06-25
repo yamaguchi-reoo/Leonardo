@@ -107,6 +107,8 @@ void GameMainScene::Draw()
 		int hint_width = GetDrawStringWidthToHandle(hint, strlen(hint), font_24);
 		DrawStringToHandle((SCREEN_WIDTH - hint_width) / 2, SCREEN_HEIGHT / 2 + 90, hint, GetColor(255, 255, 255), font_24);
 	}
+
+	DrawFormatString(10, 200, GetColor(255, 255, 255), "%d", trap_num);
 }
 
 void GameMainScene::Finalize()
@@ -326,6 +328,11 @@ void GameMainScene::CreateItem()
 void GameMainScene::CreateGimmick()
 {
 	std::vector<Vector2D> trap_positions;
+
+	if (trap_num >= 7)
+	{
+		trap_num = 7;
+	}
 
 	// トラップを置く候補位置を探す（空＋その下がブロック）
 	for (int i = 0; i < stage_height_num - 1; ++i) {
