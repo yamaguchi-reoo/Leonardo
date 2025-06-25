@@ -129,7 +129,8 @@ eSceneType GameMainScene::GetNowSceneType() const
 
 void GameMainScene::LoadStage()
 {
-	std::ifstream file("Resource/file/stage.csv");
+	//std::ifstream file("Resource/file/stage.csv");
+	std::ifstream file("Resource/file/sample_stage.csv");
 
 	if (!file) {
 		std::cerr << "ファイルを開けませんでした: " << std::endl;

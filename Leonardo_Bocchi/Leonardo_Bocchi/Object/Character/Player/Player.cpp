@@ -49,7 +49,7 @@ void Player::Update()
 	if (damage_flg)
 	{
 		damage_timer++;
-		if (damage_timer >= 180)
+		if (damage_timer >= 120)
 		{
 			damage_timer = 0;
 			damage_flg = false;
