@@ -13,6 +13,7 @@ private:
 	bool is_visible;
 	int visible_timer;
 	bool is_close = false;
+	bool is_already_shown = false;
 
 
 	float box_width = 0.0f;           // “WŠJ’†‚Ì•

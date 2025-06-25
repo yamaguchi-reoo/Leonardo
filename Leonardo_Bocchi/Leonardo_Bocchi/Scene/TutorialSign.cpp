@@ -27,7 +27,8 @@ void TutorialSign::Initialize()
 
 void TutorialSign::Update(const Vector2D& player_pos)
 {
-    // 横方向のみ距離判定
+    if (is_already_shown) return; // 既に表示完了なら何もしない
+
     float dx = std::abs(player_pos.x - position.x);
 
     if (!is_visible && !is_close && dx < trigger_distance)
@@ -43,7 +44,6 @@ void TutorialSign::Update(const Vector2D& player_pos)
 
     if (is_visible && !is_close)
     {
-        // 展開アニメーション
         if (anim_timer < 30)
         {
             anim_timer++;
@@ -53,20 +53,17 @@ void TutorialSign::Update(const Vector2D& player_pos)
         }
         else
         {
-            // 展開完了 → 表示維持
             visible_timer++;
             if (visible_timer > 240)
             {
-                // 閉じるアニメーション開始
                 is_close = true;
                 is_visible = false;
-                anim_timer = 30; // 閉じる用に初期化
+                anim_timer = 30;
             }
         }
     }
     else if (is_close)
     {
-        // 閉じるアニメーション
         if (anim_timer > 0)
         {
             anim_timer--;
@@ -76,11 +73,11 @@ void TutorialSign::Update(const Vector2D& player_pos)
         }
         else
         {
-            // 閉じ完了
             is_close = false;
             visible_timer = 0;
             box_width = 0;
             box_height = 0;
+            is_already_shown = true;  
         }
     }
 }
