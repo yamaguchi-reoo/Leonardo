@@ -3,6 +3,7 @@
 #include "../../common.h"
 #include "../../Object/Character/Player/Player.h"
 #include "../../Object/Character/CharaBase.h"
+#include "../TutorialSign.h"
 
 class GameMainScene :
     public SceneBase
@@ -41,6 +42,8 @@ private:
 	int main_bgm;
 
 	int is_decided;
+
+	std::vector<TutorialSign> sings;
 
 public:
 	GameMainScene();
@@ -89,6 +92,8 @@ public:
 	void StopGameMainSound();
 
 	void DrawUI() const;
+
+	void TutorialMessage();
 
 };
 

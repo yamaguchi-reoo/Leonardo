@@ -35,8 +35,10 @@ void GameMainScene::Initialize()
 	camera_location = Vector2D(0.0f, 0.0f);
 	back_ground_image = LoadGraph("Resource/Images/BackGround/Base_Color.png");
 	LoadGameMainResource();
-	PlaySoundBgm(main_bgm, 60);
+	PlaySoundBgm(main_bgm, 90);
 	trap_num = 3;
+
+	TutorialMessage();
 }
 
 eSceneType GameMainScene::Update()
@@ -78,6 +80,13 @@ eSceneType GameMainScene::Update()
 		return eSceneType::RESULT;
 	}
 
+
+	for (auto& s : sings)
+	{
+		Vector2D player_pos = player->GetLocation();
+		s.Update(player_pos);
+	}
+
 	return __super::Update();
 }
 
@@ -109,6 +118,11 @@ void GameMainScene::Draw()
 	}
 
 	DrawFormatString(10, 200, GetColor(255, 255, 255), "%d", trap_num);
+
+	for (auto& s : sings)
+	{
+		s.Draw();
+	}
 }
 
 void GameMainScene::Finalize()
@@ -451,5 +465,17 @@ void GameMainScene::DrawUI() const
 	// テキスト描画
 	DrawStringToHandle(box_x + padding, box_y + padding, loop_text.c_str(), GetColor(255, 255, 455), font_48);
 
+}
+
+void GameMainScene::TutorialMessage()
+{
+	sings.emplace_back(Vector2D(640, 250), "Let's  move\n<- ->", 100);
+	//sings.emplace_back(Vector2D(600, 200), "Jump A");
+
+
+	for (auto& s : sings)
+	{
+		s.Initialize();
+	}
 }
 
