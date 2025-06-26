@@ -7,6 +7,7 @@
 #include "GameScene/NameInputScene.h"
 #include "GameScene/HelpScene.h"
 #include "GameScene/CreditScene.h"
+#include "GameScene/SelectScene.h"
 
 
 SceneManager::SceneManager() :current_scene(nullptr)
@@ -92,6 +93,8 @@ SceneBase* SceneManager::CreateScene(eSceneType type)
 		return dynamic_cast<SceneBase*>(new HelpScene());
 	case eSceneType::CREDITS:
 		return dynamic_cast<SceneBase*>(new CreditScene());
+	case eSceneType::SELECT:
+		return dynamic_cast<SceneBase*>(new SelectScene());
 	default:
 		return nullptr;
 	}

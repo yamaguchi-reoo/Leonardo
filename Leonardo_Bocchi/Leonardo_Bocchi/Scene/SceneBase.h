@@ -12,7 +12,8 @@ enum class eSceneType
 	NAME_INPUT,
 	HELP,
 	CREDITS,
-	END
+	END,
+	SELECT
 };
 
 class SceneBase

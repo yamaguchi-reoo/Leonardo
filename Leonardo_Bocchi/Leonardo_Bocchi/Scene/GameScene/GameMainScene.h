@@ -5,6 +5,15 @@
 #include "../../Object/Character/CharaBase.h"
 #include "../TutorialSign.h"
 
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+enum class StageMode {
+	TUTORIAL,
+	MAIN
+};
+
 class GameMainScene :
     public SceneBase
 {
@@ -44,6 +53,10 @@ private:
 	int is_decided;
 
 	std::vector<TutorialSign> sings;
+
+	static StageMode current_mode;
+
+	std::string file_name;
 
 public:
 	GameMainScene();
@@ -94,6 +107,8 @@ public:
 	void DrawUI() const;
 
 	void TutorialMessage();
+
+	static void SetStageMode(StageMode mode);
 
 };
 

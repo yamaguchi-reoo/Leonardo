@@ -66,8 +66,9 @@ eSceneType TitleScene::Update()
         {
         case MENU_START:
             //return eSceneType::GAME_MAIN;
-            next_scene = eSceneType::GAME_MAIN;
+            //next_scene = eSceneType::GAME_MAIN;
             StopTitleSound(); // タイトルBGMを停止
+            next_scene = eSceneType::SELECT;
 			break;
         case MENU_HELP:
 			next_scene = eSceneType::HELP; // ヘルプシーンへ移行
@@ -126,8 +127,8 @@ void TitleScene::Draw()
             int cursor_x = (SCREEN_WIDTH - width) / 2 - 50;
             int cursor_y = y + 10;
 
-            DrawGraph(cursor_x, cursor_y - 10, animation_data[cursor_frame], TRUE);
-
+            //DrawGraph(cursor_x, cursor_y - 10, animation_data[cursor_frame], TRUE);
+            DrawStringToHandle(cursor_x, cursor_y - 10, ">>", color, menu_font);
             // 下線は残す
             DrawLine((SCREEN_WIDTH - width) / 2, y + 40, (SCREEN_WIDTH - width) / 2 + width, y + 40, GetColor(255, 255, 0));
         }
@@ -135,7 +136,7 @@ void TitleScene::Draw()
         DrawStringToHandle((SCREEN_WIDTH - width) / 2, y, text, color, menu_font);
     }
 
-    const char* hint = "[UP/DOWN]: SELECT  [A]: DECISION";
+    const char* hint = "[UP/DOWN]: Select  [A]: Decide";
     int hint_w = GetDrawStringWidthToHandle(hint, -1, small_font);
     DrawStringToHandle((SCREEN_WIDTH - hint_w) / 2, SCREEN_HEIGHT - 50, hint, GetColor(180, 180, 180), small_font);
 }

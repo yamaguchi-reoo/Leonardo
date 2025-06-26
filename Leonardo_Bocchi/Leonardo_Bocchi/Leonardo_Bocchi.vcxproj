@@ -161,6 +161,7 @@
     <ClCompile Include="Object\Stage\Trap.cpp" />
     <ClCompile Include="Scene\GameScene\TitleScene.cpp" />
     <ClCompile Include="Scene\TutorialSign.cpp" />
+    <ClCompile Include="Scene\GameScene\SelectScene.cpp" />
     <ClCompile Include="Utility\ResourceManager.cpp" />
     <ClCompile Include="Utility\Fps.cpp" />
     <ClCompile Include="Utility\InputControl.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Object\Stage\Trap.h" />
     <ClInclude Include="Scene\GameScene\TitleScene.h" />
     <ClInclude Include="Scene\TutorialSign.h" />
+    <ClInclude Include="Scene\GameScene\SelectScene.h" />
     <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Utility\Fps.h" />
     <ClInclude Include="Utility\InputControl.h" />

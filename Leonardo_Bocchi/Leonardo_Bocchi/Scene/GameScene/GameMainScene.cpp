@@ -7,6 +7,8 @@
 #include <iostream>
 #include <random>
 
+StageMode GameMainScene::current_mode = StageMode::MAIN;
+
 namespace {
 	constexpr int GAME_OVER_FADE_MAX = 200;
 	constexpr int GAME_OVER_WAIT_FRAMES = 20;
@@ -31,6 +33,17 @@ GameMainScene::~GameMainScene() {}
 
 void GameMainScene::Initialize()
 {
+	if (current_mode == StageMode::TUTORIAL)
+	{
+		file_name = "Resource/file/sample_stage.csv";
+		TutorialMessage();
+	}
+	else
+	{
+		file_name = "Resource/file/stage.csv";
+	}
+
+
 	LoadStage();
 	camera_location = Vector2D(0.0f, 0.0f);
 	back_ground_image = LoadGraph("Resource/Images/BackGround/Base_Color.png");
@@ -38,7 +51,8 @@ void GameMainScene::Initialize()
 	PlaySoundBgm(main_bgm, 90);
 	trap_num = 3;
 
-	TutorialMessage();
+
+	//TutorialMessage();
 }
 
 eSceneType GameMainScene::Update()
@@ -144,7 +158,9 @@ eSceneType GameMainScene::GetNowSceneType() const
 void GameMainScene::LoadStage()
 {
 	//std::ifstream file("Resource/file/stage.csv");
-	std::ifstream file("Resource/file/sample_stage.csv");
+	//std::ifstream file("Resource/file/sample_stage.csv");
+
+	std::ifstream file(file_name);
 
 	if (!file) {
 		std::cerr << "ファイルを開けませんでした: " << std::endl;
@@ -242,7 +258,10 @@ void GameMainScene::UpdateCamera()
 
 void GameMainScene::StageClear()
 {
-	clear_count++;
+	if (current_mode == StageMode::MAIN)
+	{
+		clear_count++;
+	}
 	//プレイヤーを取得
 	Player* p = static_cast<Player*>(player);
 
@@ -478,5 +497,10 @@ void GameMainScene::TutorialMessage()
 	{
 		s.Initialize();
 	}
+}
+
+void GameMainScene::SetStageMode(StageMode mode)
+{
+	current_mode = mode;
 }
 
