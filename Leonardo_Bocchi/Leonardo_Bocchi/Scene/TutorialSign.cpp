@@ -54,7 +54,7 @@ void TutorialSign::Update(const Vector2D& player_pos)
         else
         {
             visible_timer++;
-            if (visible_timer > 120)
+            if (visible_timer > 150)
             {
                 is_close = true;
                 is_visible = false;

@@ -58,6 +58,11 @@ private:
 
 	std::string file_name;
 
+	bool is_tutorial_clear;
+	bool is_congrats_display;
+	int congrats_timer;
+	int congrats_alpha;
+
 public:
 	GameMainScene();
 	~GameMainScene();
