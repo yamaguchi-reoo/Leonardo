@@ -226,7 +226,7 @@ void Player::HandleInput()
 			jump_time = 0;
 			on_ground = false;
 			next_state = ActionState::JUMP;
-			sound_manager.PlaySoundSE(SoundType::JUMP, 50, true);
+			sound_manager.PlaySoundSE(SoundType::JUMP, 60, true);
 		}
 
 		// ジャンプ延長
@@ -278,7 +278,7 @@ void Player::AnimationControl()
 		if (frame_index != prev_frame_index) {
 			for (int footstep_frame : footstep_frames) {
 				if (frame_index == footstep_frame) {
-					sound_manager.PlaySoundSE(SoundType::WALK, 80, true);
+					sound_manager.PlaySoundSE(SoundType::WALK, 90, true);
 					break;
 				}
 			}
@@ -304,7 +304,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	// 回復アイテムヒット時
 	if (hit_object->GetObjectType() == HEAL)
 	{
-		sound_manager.PlaySoundSE(SoundType::HEAL, 80, true); // 回復音
+		sound_manager.PlaySoundSE(SoundType::HEAL, 90, true); // 回復音
 		hp += 1;
 		for (int i = 0; i < 10; ++i)
 		{
@@ -315,7 +315,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	// 無敵アイテムヒット時
 	if (hit_object->GetObjectType() == INVINCIBLE)
 	{
-		sound_manager.PlaySoundSE(SoundType::INVINCIBLE, 80, true); //バリア音
+		sound_manager.PlaySoundSE(SoundType::INVINCIBLE, 90, true); //バリア音
 		if (!is_invincible)
 		{
 			is_invincible = true;
@@ -329,7 +329,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 		if (goal_timer <= 0)
 		{
-			sound_manager.PlaySoundSE(SoundType::GOAL, 80, true); // ゴール音
+			sound_manager.PlaySoundSE(SoundType::GOAL, 90, true); // ゴール音
 			goal_timer = 60; // ゴール後の無敵時間
 		}
 		is_goal = true;
@@ -339,7 +339,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	{
 		if (trap_hit_timer <= 0)
 		{
-			sound_manager.PlaySoundSE(SoundType::TRAP, 80, true);
+			sound_manager.PlaySoundSE(SoundType::TRAP, 90, true);
 			trap_hit_timer = 60.0f;
 		}
 
@@ -479,7 +479,7 @@ void Player::PlayerTeleport()
 		Vector2D spawn_pos = location + Vector2D(cosf(angle), sinf(angle)) * radius;
 		teleport_particles.emplace_back(spawn_pos);
 	}
-	sound_manager.PlaySoundSE(SoundType::TELEPORT, 80, true);
+	sound_manager.PlaySoundSE(SoundType::TELEPORT, 100, true);
 }
 
 void Player::UpdateTeleport()

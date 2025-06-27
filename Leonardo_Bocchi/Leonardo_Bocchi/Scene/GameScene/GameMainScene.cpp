@@ -50,7 +50,7 @@ void GameMainScene::Initialize()
 	camera_location = Vector2D(0.0f, 0.0f);
 	back_ground_image = LoadGraph("Resource/Images/BackGround/Base_Color.png");
 	LoadGameMainResource();
-	PlaySoundBgm(main_bgm, 90);
+	PlaySoundBgm(main_bgm, 110);
 	trap_num = 3;
 
 
@@ -120,14 +120,14 @@ eSceneType GameMainScene::Update()
 		player->SetDelete();
 		is_game_over = true;
 		fade_alpha = 0;
-		PlaySoundSe(game_over_se, 100);
+		PlaySoundSe(game_over_se, 120);
 	}
 
 	if (is_game_over) {
 		fade_alpha = Min(fade_alpha + FADE_SPEED, GAME_OVER_FADE_MAX);
 
 		if (InputControl::GetInstance()->GetButtonDown(XINPUT_BUTTON_A)) {
-			PlaySoundSe(decision_se, 80);
+			PlaySoundSe(decision_se, 90);
 			is_decided = true;
 			game_over_timer = 0;
 		}

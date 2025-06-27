@@ -63,7 +63,7 @@ void CharaBase::OnHitCollision(GameObject* hit_object)
             if (diff.y < 0) {
                 // ’…’n”»’è
                 if (!was_on_ground) {
-                    sound_manager.PlaySoundSE(SoundType::LAND, 40, true);
+                    sound_manager.PlaySoundSE(SoundType::LAND, 80, true);
                 }
                 on_ground = true;
                 location.y -= depth_y;

@@ -47,18 +47,18 @@ eSceneType TitleScene::Update()
 	if (input->GetKeyDown(KEY_INPUT_DOWN) || input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
 	{
 		select_index = (select_index + 1) % 5;
-        PlaySoundSe(select_se, 70); // 選択音を再生
+        PlaySoundSe(select_se, 90); // 選択音を再生
 	}
 	else if (input->GetKeyDown(KEY_INPUT_UP) || input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
 	{
 		select_index = (select_index - 1 + 5) % 5;
-        PlaySoundSe(select_se, 70); // 選択音を再生
+        PlaySoundSe(select_se, 90); // 選択音を再生
 	}
 
 
     if (input->GetButtonDown(XINPUT_BUTTON_A))
     {
-        PlaySoundSe(decision_se, 50); // タイトルBGMを再生
+        PlaySoundSe(decision_se, 70); // タイトルBGMを再生
         is_decided = true;
         decision_timer = 0;
 
@@ -164,7 +164,7 @@ void TitleScene::LoadResource()
 	title_bgm = sounds_data[0];
     if (CheckSoundMem(title_bgm) != 1)  // 1は再生中の意味
     {
-        PlaySoundBgm(title_bgm, 80);
+        PlaySoundBgm(title_bgm, 100);
     }
 
 	// SE

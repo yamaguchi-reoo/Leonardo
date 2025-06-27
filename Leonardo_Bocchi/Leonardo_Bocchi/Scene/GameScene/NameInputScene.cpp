@@ -72,31 +72,38 @@ void NameInputScene::HandleInput()
 	input_cooldown--;
 	if (input_cooldown > 0) return; // クールダウン中は入力を無視
 
-	if (input->GetButtonDown(XINPUT_BUTTON_DPAD_RIGHT)) 
+	int prev_x = cursor_x;
+	int prev_y = cursor_y;
+
+	if (input->GetButtonDown(XINPUT_BUTTON_DPAD_RIGHT))
 	{
-		PlaySoundSe(select_se, 70); // 選択音を再生
-		cursor_x = (cursor_x + 1) % grid_width; // 右に移動
-		input_cooldown = 5; // クールダウンタイマーを設定
+		cursor_x = (cursor_x + 1) % grid_width;
+		if (cursor_y * grid_width + cursor_x >= keys.size()) cursor_x = prev_x;
+		else PlaySoundSe(select_se, 90);
+		input_cooldown = 5;
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_LEFT))
 	{
-		PlaySoundSe(select_se, 70); // 選択音を再生
-		cursor_x = (cursor_x - 1 + grid_width) % grid_width; // 左に移動
-		input_cooldown = 5; // クールダウンタイマーを設定
+		cursor_x = (cursor_x - 1 + grid_width) % grid_width;
+		if (cursor_y * grid_width + cursor_x >= keys.size()) cursor_x = prev_x;
+		else PlaySoundSe(select_se, 90);
+		input_cooldown = 5;
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
 	{
-		PlaySoundSe(select_se, 70); // 選択音を再生
 		cursor_y = (cursor_y + 1) % grid_height;
+		if (cursor_y * grid_width + cursor_x >= keys.size()) cursor_y = prev_y;
+		else PlaySoundSe(select_se, 90);
 		input_cooldown = 5;
 	}
 	else if (input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
 	{
-		PlaySoundSe(select_se, 70); // 選択音を再生
 		cursor_y = (cursor_y - 1 + grid_height) % grid_height;
+		if (cursor_y * grid_width + cursor_x >= keys.size()) cursor_y = prev_y;
+		else PlaySoundSe(select_se, 90);
 		input_cooldown = 5;
 	}
-	
+
 
 	int index = cursor_y * grid_width + cursor_x;
 	if (index < keys.size() && input->GetButtonDown(XINPUT_BUTTON_A))
@@ -105,7 +112,7 @@ void NameInputScene::HandleInput()
 
 		if (key == "Del")
 		{
-			PlaySoundSe(select_se, 70); // 選択音を再生
+			PlaySoundSe(decision_se, 90); // 選択音を再生
 			if (!player_name.empty())
 			{
 				player_name.pop_back(); // 最後の文字を削除
@@ -113,7 +120,7 @@ void NameInputScene::HandleInput()
 		}
 		else if (key == "OK")
 		{
-			PlaySoundSe(decision_se, 70); // 決定音を再生
+			PlaySoundSe(decision_se, 90); // 決定音を再生
 			if (!player_name.empty())
 			{
 				RankingManager::GetInstance()->AddEntry(player_name, clear_count);
@@ -123,7 +130,7 @@ void NameInputScene::HandleInput()
 		}
 		else if (key == "Sp")
 		{
-			PlaySoundSe(select_se, 70); // 選択音を再生
+			PlaySoundSe(decision_se, 90); // 選択音を再生
 			if (player_name.size() < max_name_length)
 			{
 				player_name += " "; // スペースを追加

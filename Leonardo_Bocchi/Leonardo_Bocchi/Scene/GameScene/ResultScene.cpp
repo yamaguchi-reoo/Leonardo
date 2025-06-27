@@ -27,7 +27,7 @@ void ResultScene::Initialize()
 	sounds_data = rm->GetSound("Resource/Sounds/SE/AS_97539_画面表示／スクリーンON／解析／デジタル_Audio Trimmer.mp3");
 	result_se = sounds_data[0];
 
-	PlaySoundSe(result_se, 100);
+	PlaySoundSe(result_se, 150);
 }
 
 eSceneType ResultScene::Update()
@@ -61,12 +61,11 @@ eSceneType ResultScene::Update()
 		}
 	}
 
-	// スキップ入力（※アニメーション完了後のみ許可）
 	if (is_box_expanded && is_score_count_done)
 	{
 		if (input->GetButtonDown(XINPUT_BUTTON_A))
 		{
-			PlaySoundSe(decision_se, 70); // 決定音を再生
+			PlaySoundSe(decision_se, 90); // 決定音を再生
 
 			// ランキング比較
 			const auto& rankings = RankingManager::GetInstance()->GetRankings();
@@ -160,9 +159,6 @@ void ResultScene::Draw()
 		DrawStringToHandle(clear_x + 2, SCREEN_HEIGHT / 2 + 2, clear_text.c_str(), GetColor(0, 0, 0), score_font); // 影
 		DrawStringToHandle(clear_x, SCREEN_HEIGHT / 2, clear_text.c_str(), GetColor(255, 255, 128), score_font);  // 本体
 	}
-
-	/////////////////////////////////
-
 
 	std::string hint = "Press [A] to";
 	int hint_width = GetDrawStringWidthToHandle(hint.c_str(), hint.size(), hint_font);
