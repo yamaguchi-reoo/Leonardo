@@ -26,7 +26,8 @@ GameMainScene::GameMainScene()
 	: stage_width_num(0), stage_height_num(0), stage_data{ 0 }, player(nullptr), back_ground_image(0),
 	clone_spawn_timer(0.0f), is_create(false), is_game_over(false), is_decided(false), fade_alpha(0),
 	font_48(0), font_24(0), trap_num(0), decision_se(-1), main_bgm(-1), game_over_se(-1), game_over_timer(0),
-	is_tutorial_clear(false), is_congrats_display(false), congrats_timer(0), congrats_alpha(0)
+	is_tutorial_clear(false), is_congrats_display(false), congrats_timer(0), congrats_alpha(0),
+	is_clone_intro(false), clone_intro_alpha(0)
 {
 }
 
@@ -58,92 +59,99 @@ void GameMainScene::Initialize()
 
 eSceneType GameMainScene::Update()
 {
-    // ▼ 先に祝福演出が出ていたら、演出以外スキップ（＝停止演出）
-    if (is_congrats_display)
-    {
-        // フェードイン演出だけ動かす
-        congrats_alpha = Min(congrats_alpha + 5, 200);
-        congrats_timer++;
+	// ▼ Clone登場演出（最優先）
+	if (is_clone_intro)
+	{
+		clone_intro_alpha = Min(clone_intro_alpha + 5, 200);
 
-        // Aボタンで確定
-        if (InputControl::GetInstance()->GetButtonDown(XINPUT_BUTTON_A)) {
-            is_congrats_display = false;
-            is_tutorial_clear = true;  // SELECT遷移用
-            congrats_timer = 0;
-        }
+		if (InputControl::GetInstance()->GetButtonDown(XINPUT_BUTTON_A)) {
+			is_clone_intro = false;  // 演出終了、通常進行へ
+		}
 
-        // ゲームは止めておく（プレイヤーや敵は動かない）
+		// 他の処理は止めて演出だけ表示
 		return eSceneType::GAME_MAIN;
-    }
+	}
 
-    // ▼ チュートリアル終了後、セレクト画面に遷移
-    if (is_tutorial_clear && current_mode == StageMode::TUTORIAL)
-    {
-        is_tutorial_clear = false;
+	// ▼ 祝福演出（次に優先）
+	if (is_congrats_display)
+	{
+		congrats_alpha = Min(congrats_alpha + 5, 200);
+		congrats_timer++;
+
+		if (InputControl::GetInstance()->GetButtonDown(XINPUT_BUTTON_A)) {
+			is_congrats_display = false;
+			is_tutorial_clear = true;  // SELECT遷移用
+			congrats_timer = 0;
+		}
+
+		return eSceneType::GAME_MAIN;
+	}
+
+	// ▼ チュートリアル終了後、セレクト画面に遷移
+	if (is_tutorial_clear && current_mode == StageMode::TUTORIAL)
+	{
+		is_tutorial_clear = false;
 		clear_count = 0;
-        return eSceneType::SELECT;
-    }
+		return eSceneType::SELECT;
+	}
 
-    // ▼ 通常のゲーム更新処理
-    if (IsStageReload() && goal_point && !goal_point->IsActive() && current_mode == StageMode::MAIN) {
-        StageClear();
-        ReLoadStage();
-    }
-
-    if (IsStageReload() && current_mode == StageMode::TUTORIAL && goal_point && !goal_point->IsActive()) {
-        StageClear();
+	// ▼ 通常のゲーム更新処理
+	if (IsStageReload() && goal_point && !goal_point->IsActive() && current_mode == StageMode::MAIN) {
+		StageClear();
 		ReLoadStage();
-    }
+	}
 
-    UpdateCamera();
+	if (IsStageReload() && current_mode == StageMode::TUTORIAL && goal_point && !goal_point->IsActive()) {
+		StageClear();
+		ReLoadStage();
+	}
 
-    if (!player) FindPlayer();
+	UpdateCamera();
 
-    if (!is_create && ++clone_spawn_timer >= CLONE_SPAWN_DELAY) {
-        CreateClone();
-        clone_spawn_timer = 0;
-        is_create = true;
-    }
+	if (!player) FindPlayer();
 
-    if (!is_game_over && (player->GetHp() <= 0 || player->GetLocation().y > GOAL_Y_THRESHOLD)) {
-        player->SetDelete();
-        is_game_over = true;
-        fade_alpha = 0;
-        PlaySoundSe(game_over_se, 100);
-    }
+	if (!is_create && ++clone_spawn_timer >= CLONE_SPAWN_DELAY) {
+		CreateClone();
+		clone_spawn_timer = 0;
+		is_create = true;
+	}
 
-    if (is_game_over) {
-        fade_alpha = Min(fade_alpha + FADE_SPEED, GAME_OVER_FADE_MAX);
+	if (!is_game_over && (player->GetHp() <= 0 || player->GetLocation().y > GOAL_Y_THRESHOLD)) {
+		player->SetDelete();
+		is_game_over = true;
+		fade_alpha = 0;
+		PlaySoundSe(game_over_se, 100);
+	}
 
-        if (InputControl::GetInstance()->GetButtonDown(XINPUT_BUTTON_A)) {
-            PlaySoundSe(decision_se, 80);
-            is_decided = true;
-            game_over_timer = 0;
-        }
-    }
+	if (is_game_over) {
+		fade_alpha = Min(fade_alpha + FADE_SPEED, GAME_OVER_FADE_MAX);
 
-    if (is_decided && ++game_over_timer >= GAME_OVER_WAIT_FRAMES) {
-        is_game_over = false;
-		if (current_mode == StageMode::MAIN) 
-		{
+		if (InputControl::GetInstance()->GetButtonDown(XINPUT_BUTTON_A)) {
+			PlaySoundSe(decision_se, 80);
+			is_decided = true;
+			game_over_timer = 0;
+		}
+	}
+
+	if (is_decided && ++game_over_timer >= GAME_OVER_WAIT_FRAMES) {
+		is_game_over = false;
+
+		if (current_mode == StageMode::MAIN) {
 			return eSceneType::RESULT;
 		}
-		else 
-		{
+		else {
 			clear_count = 0;
 			return eSceneType::SELECT;
 		}
-    }
+	}
 
-    for (auto& s : sings)
-    {
-        Vector2D player_pos = player->GetLocation();
-        s.Update(player_pos);
-    }
+	for (auto& s : sings) {
+		Vector2D player_pos = player->GetLocation();
+		s.Update(player_pos);
+	}
 
-    return __super::Update();
+	return __super::Update();
 }
-
 
 void GameMainScene::Draw()
 {
@@ -200,7 +208,23 @@ void GameMainScene::Draw()
 		DrawStringToHandle((SCREEN_WIDTH - hint_width) / 2, SCREEN_HEIGHT / 2 + 90, hint, GetColor(255, 255, 255), font_24);
 	}
 
-	DrawFormatString(10, 200, GetColor(255, 255, 255), "%d", trap_num);
+	if (is_clone_intro)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, clone_intro_alpha);
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+		const char* msg = "A Clone has appeared.";
+		int msg_w = GetDrawStringWidthToHandle(msg, strlen(msg), font_48);
+		DrawStringToHandle((SCREEN_WIDTH - msg_w) / 2, SCREEN_HEIGHT / 2 - 20, msg, GetColor(255, 255, 255), font_48);
+
+		const char* hint = "Press A to continue";
+		int hint_w = GetDrawStringWidthToHandle(hint, strlen(hint), font_24);
+		DrawStringToHandle((SCREEN_WIDTH - hint_w) / 2, SCREEN_HEIGHT / 2 + 40, hint, GetColor(200, 200, 200), font_24);
+
+	}
+
+	//DrawFormatString(10, 200, GetColor(255, 255, 255), "%d", trap_num);
 
 	for (auto& s : sings)
 	{
@@ -397,6 +421,13 @@ void GameMainScene::CreateClone()
 		// 履歴をエネミーにセット
 		enemy->SetReplayHistory(history);
 	}
+
+	if (current_mode == StageMode::TUTORIAL && clear_count == 1)
+	{
+		is_clone_intro = true;
+		clone_intro_alpha = 0;
+	}
+
 }
 
 void GameMainScene::CreateItem()
@@ -573,10 +604,10 @@ void GameMainScene::DrawUI() const
 
 void GameMainScene::TutorialMessage()
 {
-	sings.emplace_back(Vector2D(300, 200), "Let's move\n\n <- -> ", 50);
+	sings.emplace_back(Vector2D(300, 200), "Move\n\n <- -> ", 50);
 	//sings.emplace_back(Vector2D(600, 200), "Jump A");
-	sings.emplace_back(Vector2D(1400, 200), "Let's Jump\n\nA button", 100);
-	sings.emplace_back(Vector2D(2400, 200), "Let's High Jump\n\nA button hold", 100);
+	sings.emplace_back(Vector2D(1400, 200), "Jump\n\nA button", 100);
+	sings.emplace_back(Vector2D(2400, 200), "High Jump\n\nA button hold", 100);
 
 	for (auto& s : sings)
 	{

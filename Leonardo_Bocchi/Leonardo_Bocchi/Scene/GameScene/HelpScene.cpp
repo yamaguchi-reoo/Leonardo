@@ -141,8 +141,8 @@ void HelpScene::DrawObjectPage()
 	int font = rm->GetFontHandle("Tepid Terminal", 24);
 
 	std::vector<HelpInfo> items = {
-		{"Resource/Images/Items/heal.png", "Heal Item", "HP Healing", HelpObjectType::Image},
-		{"Resource/Images/Items/adamas.png", "Barrier Item", "Invincible", HelpObjectType::Image},
+		{"Resource/Images/Items/heal.png", "Heal Item", "1HP Healing", HelpObjectType::Image},
+		{"Resource/Images/Items/adamas.png", "Barrier Item", "2 Second Invincible", HelpObjectType::Image},
 		{"Resource/Images/Gimmick/trap01.png", "Trap", "Damage on touch", HelpObjectType::Image},
 		{"", "Teleport", "Go to next loop", HelpObjectType::Shapes}
 	};

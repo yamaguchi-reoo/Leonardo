@@ -63,6 +63,9 @@ private:
 	int congrats_timer;
 	int congrats_alpha;
 
+	bool is_clone_intro;
+	int clone_intro_alpha;
+
 public:
 	GameMainScene();
 	~GameMainScene();
