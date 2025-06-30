@@ -214,13 +214,13 @@ void GameMainScene::Draw()
 		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-		const char* msg = "A Clone has appeared.";
+		const char* msg = " Clone is appeared.";
 		int msg_w = GetDrawStringWidthToHandle(msg, strlen(msg), font_48);
 		DrawStringToHandle((SCREEN_WIDTH - msg_w) / 2, SCREEN_HEIGHT / 2 - 20, msg, GetColor(255, 255, 255), font_48);
 
 		const char* hint = "Press A to continue";
 		int hint_w = GetDrawStringWidthToHandle(hint, strlen(hint), font_24);
-		DrawStringToHandle((SCREEN_WIDTH - hint_w) / 2, SCREEN_HEIGHT / 2 + 40, hint, GetColor(200, 200, 200), font_24);
+		DrawStringToHandle((SCREEN_WIDTH - hint_w) / 2, SCREEN_HEIGHT / 2 + 90, hint, GetColor(200, 200, 200), font_24);
 
 	}
 
